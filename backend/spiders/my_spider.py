@@ -4,6 +4,7 @@ import logging
 import re
 import datetime
 import urllib
+from flask import current_app
 
 # 配置日志系统
 logging.basicConfig(
@@ -25,7 +26,7 @@ logger.error("这是一条测试错误信息")
 
 def fetch_data():
     """爬虫程序：从目标网站获取数据"""
-    url = 'http://example.com/data'
+    url = current_app.config['SPIDER_URL']
     response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -48,7 +49,7 @@ def statistical(languageType):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": "tt_ZxF8JRfPInoqrWHFdcQ3ZCiCKg4Khc7s.a6f0983adfc343274505a1e47e13b4c4",
+        "Authorization": current_app.config['AUTHORIZATION'],
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",
@@ -94,7 +95,7 @@ def getList(sportId,current,languageType,orderBy,type):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": "tt_ZxF8JRfPInoqrWHFdcQ3ZCiCKg4Khc7s.a6f0983adfc343274505a1e47e13b4c4",
+        "Authorization": current_app.config['AUTHORIZATION'],
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",

@@ -1,30 +1,38 @@
 import os
+import yaml
+
+def load_yaml_config(config_name):
+    with open('config.yaml', 'r') as f:
+        config_data = yaml.safe_load(f)
+    return config_data.get(config_name, {})
 
 class Config:
-    # 应用密钥，用于会话加密等安全功能
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard-to-guess-string'
-    # 关闭SQLAlchemy的跟踪修改功能，提升性能
+    config_data = load_yaml_config('default')
+    SECRET_KEY = config_data.get('SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI')
+    SPIDER_URL = config_data.get('SPIDER_URL')
+    AUTHORIZATION = config_data.get('AUTHORIZATION')
     
     @staticmethod
     def init_app(app):
-        # 用于初始化应用的配置
         pass
 
 class DevelopmentConfig(Config):
-    # 开发环境配置
-    DEBUG = True  # 启用调试模式
-    # 开发环境数据库URI，连接到MySQL数据库
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data'
+    config_data = load_yaml_config('development')
+    DEBUG = config_data.get('DEBUG', False)
+
+class TestingConfig(Config):
+    config_data = load_yaml_config('testing')
+    TESTING = config_data.get('TESTING', False)
 
 class ProductionConfig(Config):
-    # 生产环境配置
-    # 生产环境数据库URI，连接到MySQL数据库
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data'
+    config_data = load_yaml_config('production')
+    SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI', Config.SQLALCHEMY_DATABASE_URI)
 
-# 配置字典，用于根据环境选择不同的配置
 config = {
     'development': DevelopmentConfig,
+    'testing': TestingConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
