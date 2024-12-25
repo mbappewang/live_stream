@@ -1,0 +1,36 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# IDE/editor folders and files
+.idea/
+.vscode/
+.ropeproject/
+
+# Distribution and packaging
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+*.pot
+*.mo
+
+# Test and coverage files
+.coverage/
+.tox/
+.pytest_cache/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Environment variables file
+.env
