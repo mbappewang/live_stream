@@ -124,22 +124,22 @@ def update_prematch_streams():
             print(f"Error updating prematch stream status: {e}")
         time.sleep(86400)  # 休眠86400秒（1天）
 
-def update_finished_streams():
-    """后台任务：定期更新已结束的比赛状态
+# def update_finished_streams():
+#     """后台任务：定期更新已结束的比赛状态
     
-    运行间隔：每天执行一次
-    """
-    while True:
-        try:
-            # 获取当前时间
-            now = datetime.utcnow().timestamp()
-            # 查找所有已结束的比赛（假设比赛结束时间在当前时间之前）
-            finished_streams = FbSport.query.filter(FbSport.match_time < now).all()
-            for stream in finished_streams:
-                # 更新比赛状态为已结束
-                stream.status = 'finished'
-                stream.updated_at = datetime.utcnow()
-            db.session.commit()
-        except Exception as e:
-            print(f"Error updating finished stream status: {e}")
-        time.sleep(86400)  # 休眠86400秒（1天）
+#     运行间隔：每天执行一次
+#     """
+#     while True:
+#         try:
+#             # 获取当前时间
+#             now = datetime.utcnow().timestamp()
+#             # 查找所有已结束的比赛（假设比赛结束时间在当前时间之前）
+#             finished_streams = FbSport.query.filter(FbSport.match_time < now).all()
+#             for stream in finished_streams:
+#                 # 更新比赛状态为已结束
+#                 stream.status = 'finished'
+#                 stream.updated_at = datetime.utcnow()
+#             db.session.commit()
+#         except Exception as e:
+#             print(f"Error updating finished stream status: {e}")
+#         time.sleep(86400)  # 休眠86400秒（1天）
