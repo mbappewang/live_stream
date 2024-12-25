@@ -10,13 +10,13 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 # 初始化数据库迁移
 migrate = Migrate(app, db)
 
-@app.cli.command()
-def init_db():
-    """命令行命令：初始化数据库
-    使用方法: flask init_db
-    """
-    db.create_all()
-    print('Initialized database.')
+# @app.cli.command()
+# def init_db():
+#     """命令行命令：初始化数据库
+#     使用方法: flask init_db
+#     """
+#     db.create_all()
+#     print('Initialized database.')
 
 if __name__ == '__main__':
     # 创建并启动后台状态更新线程
