@@ -13,7 +13,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',  # 设置时间格式
     handlers=[
         logging.StreamHandler(),  # 只添加控制台输出handler
-        logging.FileHandler('log/spider.log')  # 添加文件处理器
+        logging.FileHandler('log/spider.log', encoding='utf-8')  # 添加文件处理器并指定编码为utf-8
     ]
 )
 
