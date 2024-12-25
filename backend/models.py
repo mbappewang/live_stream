@@ -1,5 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 db = SQLAlchemy()
 
@@ -35,6 +38,7 @@ class FbSport(db.Model):
 
     def to_json(self):
         """将模型转换为JSON格式，用于API响应"""
+        logger.info(f"Converting match_id {self.match_id} to JSON")
         return {
             'match_id': self.match_id,
             'match_time': self.match_time,

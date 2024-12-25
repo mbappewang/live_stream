@@ -37,9 +37,10 @@ def fetch_data():
                 'title': item.select_one('.title').text,
                 'url': item.select_one('.url').get('href')
             })
+        logger.info(f"Fetched {len(data)} items from {url}")
         return data
     else:
-        print(f"Failed to fetch data: {response.status_code}")
+        logger.error(f"Failed to fetch data: {response.status_code}")
         return None
     
 def statistical(languageType):
@@ -75,6 +76,7 @@ def statistical(languageType):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
+                logger.info(f"Successfully fetched statistical data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -126,6 +128,7 @@ def getList(sportId,current,languageType,orderBy,type):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
+                logger.info(f"Successfully fetched list data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -181,6 +184,7 @@ def getStatscore(url,lang,eventId,config_id):
             response = requests.get(full_url, headers=headers, timeout=timeout)
             
             if response.status_code == 200:
+                logger.info(f"Successfully fetched Statscore data on attempt {attempt + 1}")
                 return response.json()
         
             logger.error(f"更新Statscore数据失败, 状态码: {response.status_code}")
@@ -253,4 +257,5 @@ def createMatch_info(matchList):
         match_info['m3u8HD'] = match.get('vs', None).get('m3u8HD', None)
         match_info['m3u8SD'] = match.get('vs', None).get('m3u8SD', None)
         match_info_list.append(match_info)
+    logger.info(f"Created match info for {len(match_info_list)} matches")
     return match_info_list
