@@ -251,7 +251,7 @@ def getStatscore_id(matchInfo,lang):
         match = re.search(r'matchId=(\d+)', matchInfo['animation1'])
         config = re.search(r'configId=([a-fA-F0-9]+)', matchInfo['animation1'])
         if not match or not config:
-            logger.error(f"正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
+            logger.error(f"{matchInfo['match_name']}正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
             return None
         match_id = match.group(1)
         config_id = config.group(1)
