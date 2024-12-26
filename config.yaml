@@ -2,7 +2,7 @@ default:
   SECRET_KEY: "hard-to-guess-string"
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data"
   SPIDER_URL: "http://example.com/data"
-  AUTHORIZATION: "tt_5vx3nTfxb3zylyuaRhmEfl5BLmNfhlFy.438cdb922486a1542c89403da0fd6e0e"
+  AUTHORIZATION: "tt_KfHOkYjg2Evg05gaaox6uogTxslYRov7.dc338b7fe3b2c20796df1b9b4da93831"
 
 development:
   DEBUG: true
@@ -11,4 +11,4 @@ testing:
   TESTING: true
 
 production:
-  SQLALCHEMY_DATABASE_URI: "tt_5vx3nTfxb3zylyuaRhmEfl5BLmNfhlFy.438cdb922486a1542c89403da0fd6e0e"
+  SQLALCHEMY_DATABASE_URI: "tt_KfHOkYjg2Evg05gaaox6uogTxslYRov7.dc338b7fe3b2c20796df1b9b4da93831"

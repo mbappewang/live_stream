@@ -152,7 +152,7 @@ def createMatch_info(matchList):
     for match in matchList:
         match_info = {}
         match_info['match_time'] = match.get('bt', None)/1000
-        match_info['match_time_utc'] = datetime.datetime.utcfromtimestamp(match_info['match_time'])
+        match_info['match_time_utc'] = datetime.fromtimestamp(match_info['match_time'], tz=timezone.utc)
         match_info['regionName'] = match.get('lg', None).get('rnm', None)
         match_info['regionId'] = match.get('lg', None).get('rid', None)
         match_info['regionUrl'] = match.get('lg', None).get('rlg', None)
@@ -290,7 +290,7 @@ def getStatscore_id(matchInfo,lang):
             logger.info(f"{matchInfo['match_name']}的animation1为空")
             statscore_id = 0
             return statscore_id
-        startTime = datetime.datetime.now()
+        startTime = datetime.now()
         match = re.search(r'matchId=(\d+)', matchInfo['animation1'])
         config = re.search(r'configId=([a-fA-F0-9]+)', matchInfo['animation1'])
         if not match or not config:
@@ -301,7 +301,7 @@ def getStatscore_id(matchInfo,lang):
         Statscore = getStatscore(matchInfo['animation1'],'en',match_id,config_id)
         key = f'event|eventId:{match_id}|language:{lang}|timezoneOffset:-480'
         statscore_id = Statscore.get('state', {}).get('fetchHistory', {}).get(key, {}).get('result', {}).get('season', {}).get('stage', {}).get('group', {}).get('event', {}).get('ls_id', None)
-        endTime = datetime.datetime.now()
+        endTime = datetime.now()
         logger.info(f"{matchInfo['match_name']}获取Statscore ID成功: {statscore_id} 用时{endTime - startTime}")
         return statscore_id
     except Exception as e:
@@ -322,6 +322,7 @@ def fetch_data(mode):
             matchList.extend(listRecods)
     match_info_list = createMatch_info(matchList)
     for match_info in match_info_list:
+        match_info['status'] = mode
         statscore_id = getStatscore_id(match_info,'en')
         match_info['statscore_id'] = statscore_id
     return match_info_list
