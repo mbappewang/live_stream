@@ -14,7 +14,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',  # 设置时间格式
     handlers=[
         logging.StreamHandler(),  # 只添加控制台输出handler
-        logging.FileHandler('log/spider.log', encoding='utf-8')  # 添加文件处理器并指定编码为utf-8
+        logging.FileHandler('log/test_spider.log', encoding='utf-8')  # 添加文件处理器并指定编码为utf-8
     ]
 )
 
@@ -32,7 +32,7 @@ def statistical(languageType):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": current_app.config.get('AUTHORIZATION'),
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",
@@ -102,7 +102,7 @@ def getList(sportId,current,languageType,orderBy,type):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": current_app.config.get('AUTHORIZATION'),
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",
@@ -133,7 +133,7 @@ def getList(sportId,current,languageType,orderBy,type):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched list data on attempt {attempt + 1}")
+                logger.info(f"Successfully fetched list sportId: {sportId} data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -252,7 +252,7 @@ def getStatscore_id(matchInfo,lang):
         match = re.search(r'matchId=(\d+)', matchInfo['animation1'])
         config = re.search(r'configId=([a-fA-F0-9]+)', matchInfo['animation1'])
         if not match or not config:
-            logger.error(f"正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
+            logger.error(f"{matchInfo['match_name']} 正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
             return None
         match_id = match.group(1)
         config_id = config.group(1)
@@ -263,7 +263,7 @@ def getStatscore_id(matchInfo,lang):
         logger.info(f"{matchInfo['match_name']}获取Statscore ID成功: {statscore_id} 用时{endTime - startTime}")
         return statscore_id
     except Exception as e:
-        logger.error(f"获取Statscore ID失败: {e}")
+        logger.error(f"{matchInfo['match_name']}获取Statscore ID失败: {e}")
         return None
 
 # getList(sportId,current,languageType,orderBy,type):
@@ -282,3 +282,9 @@ def fetch_data(mode):
         statscore_id = getStatscore_id(match_info,'en')
         match_info['statscore_id'] = statscore_id
     return match_info_list
+
+data = fetch_data('滚球')
+print(len(data))
+for i in data:
+    print(i)
+    print('--------------------------------------------')

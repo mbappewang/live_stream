@@ -33,15 +33,15 @@ if __name__ == '__main__':
         live_thread.start()
         logger.info("Started live stream update thread")
 
-        upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
-        upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        upcoming_thread.start()
-        logger.info("Started upcoming stream update thread")
+        # upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
+        # upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # upcoming_thread.start()
+        # logger.info("Started upcoming stream update thread")
 
-        prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
-        prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        prematch_thread.start()
-        logger.info("Started prematch stream update thread")
+        # prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
+        # prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # prematch_thread.start()
+        # logger.info("Started prematch stream update thread")
         
         # finished_thread = threading.Thread(target=lambda: run_with_app_context(update_finished_streams))
         # finished_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束

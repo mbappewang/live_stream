@@ -4,10 +4,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-db = SQLAlchemy()
+from . import db
 
 class FbSport(db.Model):
-    __tablename__ = 'fb_sport'
+    __tablename__ = 'fb'
 
     match_id = db.Column(db.Integer, primary_key=True)
     match_time = db.Column(db.BigInteger)
@@ -32,7 +32,7 @@ class FbSport(db.Model):
     m3u8HD = db.Column(db.Text)
     m3u8SD = db.Column(db.Text)
     statscore_id = db.Column(db.Integer)
-    status = db.Column(db.String(50))  # 比赛状态字段
+    status = db.Column(db.Integer)  # 比赛状态字段
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 创建时间
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)  # 更新时间
 
