@@ -1,5 +1,5 @@
 from . import db
-from .models import FbSport
+from .models import FbSport, MatchInfo, MarketInfo, MarketType, MatchPeriod, MatchStatus, MarketName, Period, StatsType, SportType, TournamentPhase, Animation, Stream, Region, League, Team
 import time
 from datetime import datetime
 from .spiders.my_spider import fetch_data

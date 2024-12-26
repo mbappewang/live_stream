@@ -6,6 +6,7 @@ import datetime
 import urllib
 from flask import current_app
 import math
+from datetime import datetime, timezone
 
 # 配置日志系统
 logging.basicConfig(
@@ -186,6 +187,47 @@ def createMatch_info(matchList):
     logger.info(f"Created match info for {len(match_info_list)} matches")
     return match_info_list
 
+def new_createMatch_info(matchList,lang):
+    match_info_list = []
+    for match in matchList:
+        match_info = {}
+        match_info['id'] = match.get('id', '')
+        match_info['lang'] = lang
+        match_info['match_time_unix'] = match.get('bt', 0)/1000
+        match_info['start_time'] = datetime.fromtimestamp(match_info['match_time_unix'], tz=timezone.utc)
+        match_info['match_name'] = match.get('nm', '')
+        match_info['period_id'] = match.get('mc', {}).get('pe', '')
+        match_info['status_id'] = match.get('ms', '')
+        match_info['sportId'] = match.get('sid', '')
+        match_info['regionId'] = match.get('lg', {}).get('rid', '')
+        match_info['leagueId'] = match.get('lg', {}).get('id', '')
+        match_info['league_order'] = match.get('lg', {}).get('or', '')
+        match_info['is_hot'] = match.get('lg', {}).get('hot', '')
+        match_info['hometeamId'] = match.get('ts', {})[0].get('id', '')
+        match_info['hometeamUrl'] = match.get('ts', {})[0].get('lurl', '')
+        match_info['hometeamName'] = match.get('ts', {})[0].get('na', '')
+        match_info['awayteamId'] = match.get('ts', {})[1].get('id', '')
+        match_info['awayteamUrl'] = match.get('ts', {})[1].get('lurl', '')
+        match_info['awayteamName'] = match.get('ts', {})[1].get('na', '')
+        match_info['match_stats'] = match.get('nsg', {})
+        match_info['market'] = match.get('mg', {})
+        if len(match.get('as', [])) == 0:
+            match_info['animation1'] = ''
+            match_info['animation2'] = ''
+        elif len(match.get('as', [])) == 1:
+            match_info['animation1'] = ''
+            match_info['animation2'] = match.get('as', [])[0]
+        else:
+            match_info['animation1'] = match.get('as', [])[0]
+            match_info['animation2'] = match.get('as', [])[1]
+        match_info['web'] = match.get('vs', {}).get('web', '')
+        match_info['flvHD'] = match.get('vs', {}).get('flvHD', '')
+        match_info['flvSD'] = match.get('vs', {}).get('flvSD', '')
+        match_info['m3u8HD'] = match.get('vs', {}).get('m3u8HD', '')
+        match_info['m3u8SD'] = match.get('vs', {}).get('m3u8SD', '')
+        match_info_list.append(match_info)
+    return match_info_list
+
 def getStatscore(url,lang,eventId,config_id):
     url = f'https://widgets.statscore.com/api/ssr/render-widget/{config_id}'
     headers = {
@@ -280,7 +322,66 @@ def fetch_data(mode):
             matchList.extend(listRecods)
     match_info_list = createMatch_info(matchList)
     for match_info in match_info_list:
-        match_info['status'] = mode
         statscore_id = getStatscore_id(match_info,'en')
         match_info['statscore_id'] = statscore_id
     return match_info_list
+
+def getfileStreamByType(languageType):
+    url = "https://api.fastbsv.com/language/fileStreamByType"
+
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
+        "Authorization": current_app.config.get('AUTHORIZATION'),
+        "Cache-Control": "no-cache",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Dnt": "1",
+        "Origin": "https://pc1.w.fbs6668.com",
+        "Pragma": "no-cache",
+        "Referer": "https://pc1.w.fbs6668.com/",
+        "Sec-Ch-Ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": "\"macOS\"",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    }
+    payload = {
+    "languageType":languageType
+    }
+    max_retries = 10
+    timeout = 10
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers = headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                return response.json()
+
+            logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求LiveMatchList超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求LiveMatchList发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
+    return {}
+
+def fetch_basic_data(table):
+    basicResponse = getfileStreamByType('CMN')
+    basicData = basicResponse.get(table, {})
+    basicList = []
+    for i,j in basicData.items():
+        for k,v in j.items():
+            data = {}
+            data['id'] = i
+            data['lang'] = k
+            data['name'] = v
+            basicList.append(data)
+    return basicList

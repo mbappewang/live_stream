@@ -78,7 +78,7 @@ class FbSport(db.Model):
 class MatchInfo(db.Model):
     __tablename__ = 'match_info'
 
-    match_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     match_time_unix = db.Column(db.BigInteger, nullable=True)
     start_time = db.Column(db.DateTime, nullable=True)
     match_name = db.Column(db.String(100), nullable=True)
@@ -97,7 +97,7 @@ class MatchInfo(db.Model):
         """将模型转换为JSON格式，用于API响应"""
         logger.info(f"Converting match_id {self.match_id} to JSON")
         return {
-            'match_id': self.match_id,
+            'id': self.id,
             'match_time_unix': self.match_time_unix,
             'start_time': self.start_time.isoformat() if self.start_time else None,
             'match_name': self.match_name,
@@ -259,8 +259,8 @@ class Animation(db.Model):
     __tablename__ = 'animation'
 
     id = db.Column(db.Integer, primary_key=True)
-    as1 = db.Column(db.Text, nullable=True)
-    as2 = db.Column(db.Text, nullable=True)
+    animation1 = db.Column(db.Text, nullable=True)
+    animation2 = db.Column(db.Text, nullable=True)
     statscore_id = db.Column(db.Integer, nullable=True)
 
     def to_json(self):
@@ -268,8 +268,8 @@ class Animation(db.Model):
         logger.info(f"Converting id {self.id} to JSON")
         return {
             'id': self.id,
-            'as1': self.as1,
-            'as2': self.as2,
+            'animation1': self.animation1,
+            'animation2': self.animation2,
             'statscore_id': self.statscore_id
         }
 
@@ -278,10 +278,10 @@ class Stream(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     web = db.Column(db.Text, nullable=True)
-    flvsd = db.Column(db.Text, nullable=True)
-    flvhd = db.Column(db.Text, nullable=True)
-    m3u8sd = db.Column(db.Integer, nullable=True)
-    m3u8hd = db.Column(db.Text, nullable=True)
+    flvSD = db.Column(db.Text, nullable=True)
+    flvHD = db.Column(db.Text, nullable=True)
+    m3u8SD = db.Column(db.Integer, nullable=True)
+    m3u8HD = db.Column(db.Text, nullable=True)
 
     def to_json(self):
         """将模型转换为JSON格式，用于API响应"""
@@ -289,10 +289,10 @@ class Stream(db.Model):
         return {
             'id': self.id,
             'web': self.web,
-            'flvsd': self.flvsd,
-            'flvhd': self.flvhd,
-            'm3u8sd': self.m3u8sd,
-            'm3u8hd': self.m3u8hd
+            'flvSD': self.flvSD,
+            'flvHD': self.flvHD,
+            'm3u8SD': self.m3u8SD,
+            'm3u8HD': self.m3u8HD
         }
 
 class Region(db.Model):

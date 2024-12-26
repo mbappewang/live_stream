@@ -437,9 +437,79 @@ def getMatchResultList(languageType):
     logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
     return {}
 
-MatchResultListResponse = getMatchResultList('CMN')
-MatchResultListData = MatchResultListResponse.get('data', {})
-for k,v in MatchResultListResponse.items():
-    if k == 'data':
-        continue
-    print(k,v)
+def getfileStreamByType(languageType):
+    url = "https://api.fastbsv.com/language/fileStreamByType"
+
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
+        # "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
+        "Cache-Control": "no-cache",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Dnt": "1",
+        "Origin": "https://pc1.w.fbs6668.com",
+        "Pragma": "no-cache",
+        "Referer": "https://pc1.w.fbs6668.com/",
+        "Sec-Ch-Ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": "\"macOS\"",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    }
+    payload = {
+    "languageType":languageType
+    }
+    max_retries = 10
+    timeout = 10
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers = headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                return response.json()
+
+            logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求LiveMatchList超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求LiveMatchList发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
+    return {}
+
+# MatchResultListResponse = getMatchResultList('CMN')
+# MatchResultListData = MatchResultListResponse.get('data', {})
+# for k,v in MatchResultListResponse.items():
+#     if k == 'data':
+#         continue
+#     print(k,v)
+
+def fetch_basic_data(table):
+    basicResponse = getfileStreamByType('CMN')
+    basicData = basicResponse.get(table, {})
+    basicList = []
+    for i,j in basicData.items():
+        for k,v in j.items():
+            data = {}
+            data['id'] = i
+            data['lang'] = k
+            data['name'] = v
+            basicList.append(data)
+    return basicList
+
+# basicResponse = getfileStreamByType('CMN')
+# for k,v in basicResponse.items():
+#     for i,j in v.items():
+#         for lang,name in j.items():
+#             print(f"table:{k} id:{i} lang:{lang} name:{name}")
+
+basicList = fetch_basic_data('Match Status')
+for i in basicList:
+    print(i)
