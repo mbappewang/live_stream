@@ -87,6 +87,7 @@ class MatchInfo(db.Model):
     sportId = db.Column(db.Integer, nullable=True)
     regionId = db.Column(db.Integer, nullable=True)
     leagueId = db.Column(db.Integer, nullable=True)
+    league_order = db.Column(db.Integer, nullable=True)
     is_hot = db.Column(db.Boolean, nullable=True)
     hometeamId = db.Column(db.Integer, nullable=True)
     awayteamId = db.Column(db.Integer, nullable=True)
@@ -105,6 +106,7 @@ class MatchInfo(db.Model):
             'sportId': self.sportId,
             'regionId': self.regionId,
             'leagueId': self.leagueId,
+            "league_order": self.league_order,
             'is_hot': self.is_hot,
             'hometeamId': self.hometeamId,
             'awayteamId': self.awayteamId,
