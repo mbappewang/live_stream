@@ -641,3 +641,226 @@
 2024-12-26 19:41:03.078 INFO [__main__] 米兰.塞特纳 (捷克) vs 吉里.马查特 (捷克)获取Statscore ID成功: 14482259 用时0:00:01.501364
 2024-12-26 19:41:05.026 INFO [__main__] Successfully fetched Statscore data on attempt 1
 2024-12-26 19:41:05.029 INFO [__main__] 弗拉丹.布罗姆 (捷克) vs 马丁.索斯诺维克 (捷克)获取Statscore ID成功: 14482270 用时0:00:01.950984
+2024-12-26 20:56:04.111 INFO [__main__] 程序开始运行
+2024-12-26 20:56:04.111 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 20:56:18.772 INFO [__main__] 程序开始运行
+2024-12-26 20:56:18.772 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 20:56:24.056 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:25.260 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:26.455 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:27.613 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:28.690 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:29.763 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:30.990 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:32.128 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:33.265 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:34.470 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 20:56:34.470 ERROR [__main__] 更新Statscore数据失败，重试了 10 次，仍未成功
+2024-12-26 20:57:56.979 INFO [__main__] 程序开始运行
+2024-12-26 20:57:56.979 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 20:57:59.350 INFO [__main__] Successfully fetched Statscore data on attempt 1
+2024-12-26 21:06:15.928 INFO [__main__] 程序开始运行
+2024-12-26 21:06:15.928 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 21:06:19.344 INFO [__main__] Successfully fetched Statscore data on attempt 1
+2024-12-26 21:06:20.966 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:22.571 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:24.057 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:25.557 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:27.110 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:28.708 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:30.394 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:31.899 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:06:33.441 ERROR [__main__] 更新Statscore数据失败, 状态码: 405
+2024-12-26 21:07:46.980 INFO [__main__] 程序开始运行
+2024-12-26 21:07:46.980 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 21:07:49.399 INFO [__main__] Successfully fetched schedule data on attempt 1
+2024-12-26 21:07:50.568 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:51.795 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:52.853 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:54.010 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:55.275 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:56.397 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:07:57.528 ERROR [__main__] Failed to fetch metadata, status code: 405
+2024-12-26 21:08:47.391 INFO [__main__] 程序开始运行
+2024-12-26 21:08:47.391 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 21:08:49.768 INFO [__main__] Successfully fetched schedule data on attempt 1
+2024-12-26 21:08:50.858 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:52.111 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:53.210 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:54.362 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:55.556 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:56.646 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:57.845 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:08:59.037 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:00.303 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:01.631 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:30.561 INFO [__main__] 程序开始运行
+2024-12-26 21:09:30.561 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 21:09:33.101 INFO [__main__] Successfully fetched schedule data on attempt 1
+2024-12-26 21:09:33.103 INFO [__main__] Found 75 events
+2024-12-26 21:09:34.302 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:34.304 INFO [__main__] Statscore ID for event 6829206: 14478280
+2024-12-26 21:09:35.453 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:35.455 INFO [__main__] Statscore ID for event 6833855: 14485163
+2024-12-26 21:09:36.656 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:36.657 INFO [__main__] Statscore ID for event 6833337: 14283047
+2024-12-26 21:09:37.868 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:37.870 INFO [__main__] Statscore ID for event 6836262: 14479774
+2024-12-26 21:09:39.048 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:39.048 INFO [__main__] Statscore ID for event 6833899: 14485453
+2024-12-26 21:09:40.280 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:40.283 INFO [__main__] Statscore ID for event 6831917: 14482012
+2024-12-26 21:09:41.406 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:41.406 INFO [__main__] Statscore ID for event 6834821: 14480909
+2024-12-26 21:09:42.611 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:42.613 INFO [__main__] Statscore ID for event 6781580: 14282916
+2024-12-26 21:09:43.912 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:43.912 INFO [__main__] Statscore ID for event 6833839: 14485140
+2024-12-26 21:09:45.008 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:45.009 INFO [__main__] Statscore ID for event 6833832: 14485095
+2024-12-26 21:09:46.280 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:46.281 INFO [__main__] Statscore ID for event 6833331: 14445921
+2024-12-26 21:09:47.506 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:47.506 INFO [__main__] Statscore ID for event 6827562: 14468774
+2024-12-26 21:09:48.707 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:09:48.708 INFO [__main__] Statscore ID for event 6829198: 14424503
+2024-12-26 21:09:49.837 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:31.705 INFO [__main__] 程序开始运行
+2024-12-26 21:10:31.705 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 21:10:34.203 INFO [__main__] Successfully fetched schedule data on attempt 1
+2024-12-26 21:10:34.204 INFO [__main__] Found 75 events
+2024-12-26 21:10:35.341 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:35.343 INFO [__main__] Statscore ID for event 6833336: 14114403
+2024-12-26 21:10:36.421 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:36.421 INFO [__main__] Statscore ID for event 6833855: 14485163
+2024-12-26 21:10:37.583 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:37.583 INFO [__main__] Statscore ID for event 6833899: 14485453
+2024-12-26 21:10:38.706 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:38.707 INFO [__main__] Statscore ID for event 6409415: 14173667
+2024-12-26 21:10:39.936 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:39.938 INFO [__main__] Statscore ID for event 6834821: 14480909
+2024-12-26 21:10:41.091 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:41.093 INFO [__main__] Statscore ID for event 6781580: 14282916
+2024-12-26 21:10:42.177 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:42.178 INFO [__main__] Statscore ID for event 6833839: 14485140
+2024-12-26 21:10:43.238 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:43.239 INFO [__main__] Statscore ID for event 6832955: 14482236
+2024-12-26 21:10:44.313 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:44.314 INFO [__main__] Statscore ID for event 6824035: 14469695
+2024-12-26 21:10:45.418 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:45.420 INFO [__main__] Statscore ID for event 6834953: 14473848
+2024-12-26 21:10:46.565 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:46.565 INFO [__main__] Statscore ID for event 6834952: 14473849
+2024-12-26 21:10:47.663 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:47.665 INFO [__main__] Statscore ID for event 6824080: 14443895
+2024-12-26 21:10:48.748 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:48.752 INFO [__main__] Statscore ID for event 6833846: 14485149
+2024-12-26 21:10:49.974 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:49.976 INFO [__main__] Statscore ID for event 6834135: 14283038
+2024-12-26 21:10:51.096 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:51.097 INFO [__main__] Statscore ID for event 6778486: 14407043
+2024-12-26 21:10:52.313 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:52.313 INFO [__main__] Statscore ID for event 6835410: 14487820
+2024-12-26 21:10:53.554 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:53.555 INFO [__main__] Statscore ID for event 6833276: 14484719
+2024-12-26 21:10:54.781 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:54.782 INFO [__main__] Statscore ID for event 6829206: 14478280
+2024-12-26 21:10:56.017 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:56.018 INFO [__main__] Statscore ID for event 6833834: 14485099
+2024-12-26 21:10:57.220 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:57.221 INFO [__main__] Statscore ID for event 6834929: 14486679
+2024-12-26 21:10:58.446 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:58.447 INFO [__main__] Statscore ID for event 6831917: 14482012
+2024-12-26 21:10:59.599 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:10:59.602 INFO [__main__] Statscore ID for event 6834073: 14485789
+2024-12-26 21:11:00.797 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:00.799 INFO [__main__] Statscore ID for event 6834271: 14283042
+2024-12-26 21:11:02.144 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:02.144 INFO [__main__] Statscore ID for event 6834816: 14486265
+2024-12-26 21:11:03.304 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:03.305 INFO [__main__] Statscore ID for event 6821579: 14429678
+2024-12-26 21:11:04.420 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:04.421 INFO [__main__] Statscore ID for event 6816038: 14283041
+2024-12-26 21:11:05.619 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:05.621 INFO [__main__] Statscore ID for event 6833844: 14485148
+2024-12-26 21:11:06.853 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:06.854 INFO [__main__] Statscore ID for event 6833841: 14485147
+2024-12-26 21:11:07.979 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:07.980 INFO [__main__] Statscore ID for event 6216004: 13905361
+2024-12-26 21:11:09.192 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:09.193 INFO [__main__] Statscore ID for event 6833305: 14484932
+2024-12-26 21:11:10.315 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:10.315 INFO [__main__] Statscore ID for event 6833854: 14485162
+2024-12-26 21:11:11.481 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:11.483 INFO [__main__] Statscore ID for event 6833831: 14485086
+2024-12-26 21:11:12.685 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:12.686 INFO [__main__] Statscore ID for event 6829205: 14478276
+2024-12-26 21:11:13.920 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:13.921 INFO [__main__] Statscore ID for event 6832954: 14482241
+2024-12-26 21:11:15.087 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:15.088 INFO [__main__] Statscore ID for event 6835548: 14487808
+2024-12-26 21:11:16.280 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:16.280 INFO [__main__] Statscore ID for event 6781612: 14282917
+2024-12-26 21:11:17.499 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:17.499 INFO [__main__] Statscore ID for event 6833277: 14484720
+2024-12-26 21:11:19.084 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:19.086 INFO [__main__] Statscore ID for event 6833840: 14485145
+2024-12-26 21:11:20.564 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:20.566 INFO [__main__] Statscore ID for event 6833849: 14485151
+2024-12-26 21:11:22.127 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:22.129 INFO [__main__] Statscore ID for event 6833853: 14485154
+2024-12-26 21:11:23.727 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:23.728 INFO [__main__] Statscore ID for event 6833337: 14283047
+2024-12-26 21:11:25.216 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:25.217 INFO [__main__] Statscore ID for event 6836262: 14479774
+2024-12-26 21:11:26.733 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:26.734 INFO [__main__] Statscore ID for event 6833349: 14283050
+2024-12-26 21:11:28.270 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:28.272 INFO [__main__] Statscore ID for event 6833332: 14283051
+2024-12-26 21:11:29.807 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:29.808 INFO [__main__] Statscore ID for event 6834071: 14485787
+2024-12-26 21:11:31.445 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:31.447 INFO [__main__] Statscore ID for event 6833832: 14485095
+2024-12-26 21:11:32.946 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:32.948 INFO [__main__] Statscore ID for event 6833331: 14445921
+2024-12-26 21:11:34.515 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:34.515 INFO [__main__] Statscore ID for event 6827562: 14468774
+2024-12-26 21:11:36.019 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:36.020 INFO [__main__] Statscore ID for event 6829198: 14424503
+2024-12-26 21:11:37.583 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:37.584 ERROR [__main__] Error fetching Statscore ID for event 6749665: expected string or bytes-like object, got 'NoneType'
+2024-12-26 21:11:37.584 INFO [__main__] Statscore ID for event 6749665: None
+2024-12-26 21:11:39.228 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:39.229 INFO [__main__] Statscore ID for event 6834238: 14485979
+2024-12-26 21:11:40.764 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:40.766 INFO [__main__] Statscore ID for event 6778466: 14407039
+2024-12-26 21:11:42.277 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:42.279 INFO [__main__] Statscore ID for event 6833833: 14485100
+2024-12-26 21:11:43.866 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:43.868 INFO [__main__] Statscore ID for event 6835825: 14488140
+2024-12-26 21:11:45.475 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:45.477 INFO [__main__] Statscore ID for event 6824620: 14471188
+2024-12-26 21:11:46.983 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:46.983 INFO [__main__] Statscore ID for event 6824627: 14460951
+2024-12-26 21:11:48.649 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:48.650 INFO [__main__] Statscore ID for event 6833278: 14484742
+2024-12-26 21:11:50.182 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:50.182 INFO [__main__] Statscore ID for event 6833279: 14484738
+2024-12-26 21:11:51.687 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:51.687 INFO [__main__] Statscore ID for event 6833283: 14484771
+2024-12-26 21:11:53.258 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:53.260 INFO [__main__] Statscore ID for event 6821354: 14283052
+2024-12-26 21:11:54.787 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:54.789 INFO [__main__] Statscore ID for event 6819768: 14283039
+2024-12-26 21:11:56.272 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:56.275 INFO [__main__] Statscore ID for event 6829858: 14479535
+2024-12-26 21:11:57.830 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:57.832 INFO [__main__] Statscore ID for event 6833286: 14484874
+2024-12-26 21:11:59.321 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:11:59.323 INFO [__main__] Statscore ID for event 6833287: 14484875
+2024-12-26 21:12:00.937 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:12:00.939 INFO [__main__] Statscore ID for event 6833288: 14484869
+2024-12-26 21:12:02.547 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:12:02.547 INFO [__main__] Statscore ID for event 6827526: 14283044
+2024-12-26 21:12:04.143 INFO [__main__] Successfully fetched metadata on attempt 1
+2024-12-26 21:12:04.144 INFO [__main__] Statscore ID for event 6833298: 14484880

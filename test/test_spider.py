@@ -6,6 +6,7 @@ import datetime
 import urllib
 from flask import current_app
 import math
+import pandas as pd
 
 # 配置日志系统
 logging.basicConfig(
@@ -283,8 +284,103 @@ def fetch_data(mode):
         match_info['statscore_id'] = statscore_id
     return match_info_list
 
-data = fetch_data('滚球')
-print(len(data))
-for i in data:
+def get_token(clientId,password):
+  url = 'https://wintokens-dev-tradeart-api.trading.io/api/Account/login'
+  payload = {'clientId': clientId, 'password': password}
+  response = requests.post(url, json=payload)
+  if response.status_code == 200:
+    print("token获取成功")
+    data = response.text
+    return data
+  else:
+    print(f"获取Token失败,状态码: {response.status_code}")
+    print("响应内容:", response.text)
+    return response.status_code
+
+def getSchedule(startDate, sportId, token):
+    url = f"https://wintokens-dev-tradeart-api.trading.io/api/events/schedule/v2"
+    payload = {
+        "startDate": startDate,
+        "sportIds": [sportId]
+    }
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched schedule data on attempt {attempt + 1}")
+                return response.json()
+        
+            logger.error(f"Failed to fetch schedule data, status code: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"Request to fetch schedule data timed out, attempt {attempt + 1}/{max_retries}")
+        
+        except requests.RequestException as e:
+            logger.error(f"Error occurred while fetching schedule data: {e}, attempt {attempt + 1}/{max_retries}")
+    
+    logger.error(f"Failed to fetch schedule data after {max_retries} attempts")
+    return None
+
+def get_metadata(token, eventId):
+    url = f'https://wintokens-dev-tradeart-api.trading.io/api/Metadata/event/all/{eventId}'
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched metadata on attempt {attempt + 1}")
+                return response.json()
+        
+            logger.error(f"Failed to fetch metadata, status code: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"Request to fetch metadata timed out, attempt {attempt + 1}/{max_retries}")
+        
+        except requests.RequestException as e:
+            logger.error(f"Error occurred while fetching metadata: {e}, attempt {attempt + 1}/{max_retries}")
+    
+    logger.error(f"Failed to fetch metadata after {max_retries} attempts")
+    return None
+
+def getStatscoreId(datalist):
+    for i in datalist:
+        if i['dataType'] == 'StatsCoreIntegration':
+            return i.get('data', None).get('Id', None)
+    return None
+
+def extract_number(text):
+    match = re.search(r'm:(\d+)', text)
+    if match:
+        return match.group(1)
+    return None
+
+df = pd.read_json(r'test/pwd.json')
+clientId = df['clientId'][0]
+password = df['password'][0]
+token = get_token(clientId, password)
+scheduleResponse = getSchedule('2024-12-27',1,token)
+eventIds = [i['id'] for i in scheduleResponse]
+logger.info(f"Found {len(eventIds)} events")
+metadataList = []
+for i in eventIds:
+    metadata = {}
+    metadata['eventId'] = i
+    try:
+        statscoreId = extract_number(getStatscoreId(get_metadata(token,i)))
+    except Exception as e:
+        logger.error(f"Error fetching Statscore ID for event {i}: {e}")
+        statscoreId = None
+    logger.info(f"Statscore ID for event {i}: {statscoreId}")
+    metadata['statscoreId'] = statscoreId
+    metadataList.append(metadata)
+for i in metadataList:
     print(i)
-    print('--------------------------------------------')
