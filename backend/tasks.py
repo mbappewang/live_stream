@@ -39,14 +39,14 @@ def update_streams(data):
                 stream.awayTeam = item['awayTeam']
                 stream.awayTeamUrl = item['awayTeamUrl']
                 stream.awayTeamId = item['awayTeamId']
-                stream.animation1 = item['animation1']
-                stream.animation2 = item['animation2']
-                stream.web = item['web']
-                stream.flvHD = item['flvHD']
-                stream.flvSD = item['flvSD']
-                stream.m3u8HD = item['m3u8HD']
-                stream.m3u8SD = item['m3u8SD']
-                stream.statscore_id = item['statscore_id']
+                stream.animation1 = item.get('animation1', '')
+                stream.animation2 = item.get('animation2', '')
+                stream.web = item.get('web', '')
+                stream.flvHD = item.get('flvHD', '')
+                stream.flvSD = item.get('flvSD', '')
+                stream.m3u8HD = item.get('m3u8HD', '')
+                stream.m3u8SD = item.get('m3u8SD', '')
+                stream.statscore_id = item.get('statscore_id', '')
                 stream.updated_at = datetime.utcnow()  # 更新最后更新时间
                 logger.info(f"Updated stream with match_id {item['match_id']}")
             else:
@@ -67,14 +67,14 @@ def update_streams(data):
                     awayTeam=item['awayTeam'],
                     awayTeamUrl=item['awayTeamUrl'],
                     awayTeamId=item['awayTeamId'],
-                    animation1=item['animation1'],
-                    animation2=item['animation2'],
-                    web=item['web'],
-                    flvHD=item['flvHD'],
-                    flvSD=item['flvSD'],
-                    m3u8HD=item['m3u8HD'],
-                    m3u8SD=item['m3u8SD'],
-                    statscore_id=item['statscore_id'],
+                    animation1=item.get('animation1', ''),
+                    animation2=item.get('animation2', ''),
+                    web=item.get('web', ''),
+                    flvHD=item.get('flvHD', ''),
+                    flvSD=item.get('flvSD', ''),
+                    m3u8HD=item.get('m3u8HD', ''),
+                    m3u8SD=item.get('m3u8SD', ''),
+                    statscore_id=item.get('statscore_id', ''),
                     created_at=datetime.utcnow(),  # 设置创建时间
                     updated_at=datetime.utcnow()   # 设置最后更新时间
                 )
@@ -98,7 +98,7 @@ def update_live_streams():
     while True:
         try:
             # 调用爬虫程序获取数据
-            data = fetch_data()
+            data = fetch_data('滚球')
             update_streams(data)
         except Exception as e:
             logger.error(f"Error updating live stream status: {e}")
@@ -112,7 +112,7 @@ def update_upcoming_streams():
     while True:
         try:
             # 调用爬虫程序获取数据
-            data = fetch_data()
+            data = fetch_data('今日')
             update_streams(data)
         except Exception as e:
             logger.error(f"Error updating upcoming stream status: {e}")
@@ -126,7 +126,7 @@ def update_prematch_streams():
     while True:
         try:
             # 调用爬虫程序获取数据
-            data = fetch_data()
+            data = fetch_data('早盘')
             update_streams(data)
         except Exception as e:
             logger.error(f"Error updating prematch stream status: {e}")

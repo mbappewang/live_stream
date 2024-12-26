@@ -6,6 +6,7 @@ import datetime
 import urllib
 from flask import current_app
 import math
+import pandas as pd
 
 # 配置日志系统
 logging.basicConfig(
@@ -14,7 +15,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',  # 设置时间格式
     handlers=[
         logging.StreamHandler(),  # 只添加控制台输出handler
-        logging.FileHandler('log/spider.log', encoding='utf-8')  # 添加文件处理器并指定编码为utf-8
+        logging.FileHandler('log/test_spider.log', encoding='utf-8')  # 添加文件处理器并指定编码为utf-8
     ]
 )
 
@@ -32,7 +33,7 @@ def statistical(languageType):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": current_app.config.get('AUTHORIZATION'),
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",
@@ -92,6 +93,7 @@ def createTask():
             slInfo['count'] = j.get('c',None)
             slInfo['pageTotal'] = math.ceil(j.get('c',None) / 50)
             slList.append(slInfo)
+            print(slInfo)
     return slList
 
 def getList(sportId,current,languageType,orderBy,type):
@@ -101,7 +103,7 @@ def getList(sportId,current,languageType,orderBy,type):
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
-        "Authorization": current_app.config.get('AUTHORIZATION'),
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
         "Cache-Control": "no-cache",
         "Content-Type": "application/json;charset=UTF-8",
         "Dnt": "1",
@@ -132,7 +134,7 @@ def getList(sportId,current,languageType,orderBy,type):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched list data on attempt {attempt + 1}")
+                logger.info(f"Successfully fetched list sportId: {sportId} data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -251,7 +253,7 @@ def getStatscore_id(matchInfo,lang):
         match = re.search(r'matchId=(\d+)', matchInfo['animation1'])
         config = re.search(r'configId=([a-fA-F0-9]+)', matchInfo['animation1'])
         if not match or not config:
-            logger.error(f"{matchInfo['match_name']}正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
+            logger.error(f"{matchInfo['match_name']} 正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
             return None
         match_id = match.group(1)
         config_id = config.group(1)
@@ -271,7 +273,6 @@ def fetch_data(mode):
     slList = createTask()
     slListMode = [i for i in slList if i.get('des') == mode]
     for sl in slListMode:
-        logger.info(f"Fetching data for {sl}")
         for i in range(1,sl.get('pageTotal')+1):
             listResponse = getList(sl.get('sportId'),i,'CMN',1,sl.get('type'))
             listData = listResponse.get('data', {})
@@ -282,3 +283,104 @@ def fetch_data(mode):
         statscore_id = getStatscore_id(match_info,'en')
         match_info['statscore_id'] = statscore_id
     return match_info_list
+
+def get_token(clientId,password):
+  url = 'https://wintokens-dev-tradeart-api.trading.io/api/Account/login'
+  payload = {'clientId': clientId, 'password': password}
+  response = requests.post(url, json=payload)
+  if response.status_code == 200:
+    print("token获取成功")
+    data = response.text
+    return data
+  else:
+    print(f"获取Token失败,状态码: {response.status_code}")
+    print("响应内容:", response.text)
+    return response.status_code
+
+def getSchedule(startDate, sportId, token):
+    url = f"https://wintokens-dev-tradeart-api.trading.io/api/events/schedule/v2"
+    payload = {
+        "startDate": startDate,
+        "sportIds": [sportId]
+    }
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched schedule data on attempt {attempt + 1}")
+                return response.json()
+        
+            logger.error(f"Failed to fetch schedule data, status code: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"Request to fetch schedule data timed out, attempt {attempt + 1}/{max_retries}")
+        
+        except requests.RequestException as e:
+            logger.error(f"Error occurred while fetching schedule data: {e}, attempt {attempt + 1}/{max_retries}")
+    
+    logger.error(f"Failed to fetch schedule data after {max_retries} attempts")
+    return None
+
+def get_metadata(token, eventId):
+    url = f'https://wintokens-dev-tradeart-api.trading.io/api/Metadata/event/all/{eventId}'
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched metadata on attempt {attempt + 1}")
+                return response.json()
+        
+            logger.error(f"Failed to fetch metadata, status code: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"Request to fetch metadata timed out, attempt {attempt + 1}/{max_retries}")
+        
+        except requests.RequestException as e:
+            logger.error(f"Error occurred while fetching metadata: {e}, attempt {attempt + 1}/{max_retries}")
+    
+    logger.error(f"Failed to fetch metadata after {max_retries} attempts")
+    return None
+
+def getStatscoreId(datalist):
+    for i in datalist:
+        if i['dataType'] == 'StatsCoreIntegration':
+            return i.get('data', None).get('Id', None)
+    return None
+
+def extract_number(text):
+    match = re.search(r'm:(\d+)', text)
+    if match:
+        return match.group(1)
+    return None
+
+df = pd.read_json(r'test/pwd.json')
+clientId = df['clientId'][0]
+password = df['password'][0]
+token = get_token(clientId, password)
+scheduleResponse = getSchedule('2024-12-27',1,token)
+eventIds = [i['id'] for i in scheduleResponse]
+logger.info(f"Found {len(eventIds)} events")
+metadataList = []
+for i in eventIds:
+    metadata = {}
+    metadata['eventId'] = i
+    try:
+        statscoreId = extract_number(getStatscoreId(get_metadata(token,i)))
+    except Exception as e:
+        logger.error(f"Error fetching Statscore ID for event {i}: {e}")
+        statscoreId = None
+    logger.info(f"Statscore ID for event {i}: {statscoreId}")
+    metadata['statscoreId'] = statscoreId
+    metadataList.append(metadata)
+for i in metadataList:
+    print(i)
