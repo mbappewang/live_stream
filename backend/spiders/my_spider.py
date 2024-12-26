@@ -92,7 +92,6 @@ def createTask():
             slInfo['count'] = j.get('c',None)
             slInfo['pageTotal'] = math.ceil(j.get('c',None) / 50)
             slList.append(slInfo)
-            print(slInfo)
     return slList
 
 def getList(sportId,current,languageType,orderBy,type):
@@ -263,7 +262,7 @@ def getStatscore_id(matchInfo,lang):
         logger.info(f"{matchInfo['match_name']}获取Statscore ID成功: {statscore_id} 用时{endTime - startTime}")
         return statscore_id
     except Exception as e:
-        logger.error(f"获取Statscore ID失败: {e}")
+        logger.error(f"{matchInfo['match_name']}获取Statscore ID失败: {e}")
         return None
 
 # getList(sportId,current,languageType,orderBy,type):
@@ -272,6 +271,7 @@ def fetch_data(mode):
     slList = createTask()
     slListMode = [i for i in slList if i.get('des') == mode]
     for sl in slListMode:
+        logger.info(f"Fetching data for {sl}")
         for i in range(1,sl.get('pageTotal')+1):
             listResponse = getList(sl.get('sportId'),i,'CMN',1,sl.get('type'))
             listData = listResponse.get('data', {})
