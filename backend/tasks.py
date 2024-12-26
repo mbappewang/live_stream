@@ -26,6 +26,7 @@ def update_streams(data):
                 # 如果数据库中已有该match_id的记录，则更新该记录
                 stream = existing_streams[item['match_id']]
                 stream.match_time = item['match_time']
+                stream.match_time_utc = item['match_time_utc']
                 stream.regionName = item['regionName']
                 stream.regionId = item['regionId']
                 stream.regionUrl = item['regionUrl']
@@ -46,6 +47,7 @@ def update_streams(data):
                 stream.flvSD = item.get('flvSD', '')
                 stream.m3u8HD = item.get('m3u8HD', '')
                 stream.m3u8SD = item.get('m3u8SD', '')
+                stream.status = item.get('status', '')
                 stream.statscore_id = item.get('statscore_id', '')
                 stream.updated_at = datetime.utcnow()  # 更新最后更新时间
                 logger.info(f"Updated stream with match_id {item['match_id']}")
@@ -54,6 +56,7 @@ def update_streams(data):
                 new_stream = FbSport(
                     match_id=item['match_id'],
                     match_time=item['match_time'],
+                    match_time_utc=item['match_time_utc'],
                     regionName=item['regionName'],
                     regionId=item['regionId'],
                     regionUrl=item['regionUrl'],
@@ -74,6 +77,7 @@ def update_streams(data):
                     flvSD=item.get('flvSD', ''),
                     m3u8HD=item.get('m3u8HD', ''),
                     m3u8SD=item.get('m3u8SD', ''),
+                    status = item.get('status', ''),
                     statscore_id=item.get('statscore_id', ''),
                     created_at=datetime.utcnow(),  # 设置创建时间
                     updated_at=datetime.utcnow()   # 设置最后更新时间

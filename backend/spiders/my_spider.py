@@ -151,6 +151,7 @@ def createMatch_info(matchList):
     for match in matchList:
         match_info = {}
         match_info['match_time'] = match.get('bt', None)/1000
+        match_info['match_time_utc'] = datetime.datetime.utcfromtimestamp(match_info['match_time'])
         match_info['regionName'] = match.get('lg', None).get('rnm', None)
         match_info['regionId'] = match.get('lg', None).get('rid', None)
         match_info['regionUrl'] = match.get('lg', None).get('rlg', None)
@@ -279,6 +280,7 @@ def fetch_data(mode):
             matchList.extend(listRecods)
     match_info_list = createMatch_info(matchList)
     for match_info in match_info_list:
+        match_info['status'] = mode
         statscore_id = getStatscore_id(match_info,'en')
         match_info['statscore_id'] = statscore_id
     return match_info_list

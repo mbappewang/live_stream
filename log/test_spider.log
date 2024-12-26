@@ -864,3 +864,18 @@
 2024-12-26 21:12:02.547 INFO [__main__] Statscore ID for event 6827526: 14283044
 2024-12-26 21:12:04.143 INFO [__main__] Successfully fetched metadata on attempt 1
 2024-12-26 21:12:04.144 INFO [__main__] Statscore ID for event 6833298: 14484880
+2024-12-26 22:42:59.885 INFO [__main__] 程序开始运行
+2024-12-26 22:42:59.885 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 22:43:00.446 INFO [__main__] Successfully fetched list sportId:  data on attempt 1
+2024-12-26 22:43:15.825 INFO [__main__] 程序开始运行
+2024-12-26 22:43:15.826 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 22:43:16.235 INFO [__main__] Successfully fetched list sportId:  data on attempt 1
+2024-12-26 22:43:57.120 INFO [__main__] 程序开始运行
+2024-12-26 22:43:57.121 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 22:43:58.611 INFO [__main__] Successfully fetched list sportId:  data on attempt 1
+2024-12-26 22:44:31.714 INFO [__main__] 程序开始运行
+2024-12-26 22:44:31.723 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 22:44:33.099 INFO [__main__] Successfully fetched list sportId:  data on attempt 1
+2024-12-26 22:45:45.820 INFO [__main__] 程序开始运行
+2024-12-26 22:45:45.828 ERROR [__main__] 这是一条测试错误信息
+2024-12-26 22:45:47.072 INFO [__main__] Successfully fetched list sportId:  data on attempt 1

@@ -363,24 +363,83 @@ def extract_number(text):
         return match.group(1)
     return None
 
-df = pd.read_json(r'test/pwd.json')
-clientId = df['clientId'][0]
-password = df['password'][0]
-token = get_token(clientId, password)
-scheduleResponse = getSchedule('2024-12-27',1,token)
-eventIds = [i['id'] for i in scheduleResponse]
-logger.info(f"Found {len(eventIds)} events")
-metadataList = []
-for i in eventIds:
-    metadata = {}
-    metadata['eventId'] = i
-    try:
-        statscoreId = extract_number(getStatscoreId(get_metadata(token,i)))
-    except Exception as e:
-        logger.error(f"Error fetching Statscore ID for event {i}: {e}")
-        statscoreId = None
-    logger.info(f"Statscore ID for event {i}: {statscoreId}")
-    metadata['statscoreId'] = statscoreId
-    metadataList.append(metadata)
-for i in metadataList:
-    print(i)
+# df = pd.read_json(r'test/pwd.json')
+# clientId = df['clientId'][0]
+# password = df['password'][0]
+# token = get_token(clientId, password)
+# scheduleResponse = getSchedule('2024-12-27',1,token)
+# eventIds = [i['id'] for i in scheduleResponse]
+# logger.info(f"Found {len(eventIds)} events")
+# metadataList = []
+# for i in eventIds:
+#     metadata = {}
+#     metadata['eventId'] = i
+#     try:
+#         statscoreId = extract_number(getStatscoreId(get_metadata(token,i)))
+#     except Exception as e:
+#         logger.error(f"Error fetching Statscore ID for event {i}: {e}")
+#         statscoreId = None
+#     logger.info(f"Statscore ID for event {i}: {statscoreId}")
+#     metadata['statscoreId'] = statscoreId
+#     metadataList.append(metadata)
+# for i in metadataList:
+#     print(i)
+
+def getMatchResultList(languageType):
+    url = "https://api.fastbsv.com/v1/match/matchResultList"
+
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
+        "Cache-Control": "no-cache",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Dnt": "1",
+        "Origin": "https://pc1.w.fbs6668.com",
+        "Pragma": "no-cache",
+        "Referer": "https://pc1.w.fbs6668.com/",
+        "Sec-Ch-Ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": "\"macOS\"",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    }
+    payload = {
+    "sportId":1,
+    # "current": current,
+    "isPc":True,
+    "languageType":languageType,
+    # "orderBy":orderBy,
+    "type":0
+    }
+    max_retries = 10
+    timeout = 10
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers = headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                return response.json()
+
+            logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求LiveMatchList超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求LiveMatchList发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
+    return {}
+
+MatchResultListResponse = getMatchResultList('CMN')
+MatchResultListData = MatchResultListResponse.get('data', {})
+for k,v in MatchResultListResponse.items():
+    if k == 'data':
+        continue
+    print(k,v)
