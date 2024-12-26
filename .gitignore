@@ -20,9 +20,9 @@ dist/
 *.egg-info/
 
 # Logs
-# *.log
-# *.pot
-# *.mo
+*.log
+*.pot
+*.mo
 
 # Test and coverage files
 .coverage/
