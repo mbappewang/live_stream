@@ -151,38 +151,30 @@ def createMatch_info(matchList):
     match_info_list = []
     for match in matchList:
         match_info = {}
-        match_info['match_time'] = match.get('bt', None)/1000
-        match_info['match_time_utc'] = datetime.fromtimestamp(match_info['match_time'], tz=timezone.utc)
-        match_info['regionName'] = match.get('lg', None).get('rnm', None)
-        match_info['regionId'] = match.get('lg', None).get('rid', None)
-        match_info['regionUrl'] = match.get('lg', None).get('rlg', None)
-        match_info['leagueName'] = match.get('lg', None).get('na', None)
-        match_info['leagueId'] = match.get('lg', None).get('id', None)
-        match_info['leagueUrl'] = match.get('lg', None).get('lurl', None)
-        match_info['match_id'] = match.get('id', None)
-        match_info['match_name'] = match.get('nm', None)
-        match_info['homeTeam'] = match.get('ts', None)[0]['na']
-        match_info['homeTeamUrl'] = match.get('ts', None)[0]['lurl']
-        match_info['homeTeamId'] = match.get('ts', None)[0]['id']
-        match_info['awayTeam'] = match.get('ts', None)[1]['na']
-        match_info['awayTeamUrl'] = match.get('ts', None)[1]['lurl']
-        match_info['awayTeamId'] = match.get('ts', None)[1]['id']
-        animation_list = match.get('as', [])
-        # match_info['animation_list'] = animation_list
-        if not animation_list:
-            match_info_list.append(match_info)
+        match_info['match_time_unix'] = match.get('bt', 0) / 1000
+        match_info['start_time'] = datetime.fromtimestamp(match_info['match_time_unix'], tz=timezone.utc)
+        match_info['nm'] = match.get('nm', '')
+        if match.get('id', 0) == 0:
             continue
-        elif len(animation_list) == 1:
-            match_info['animation1'] = None
-            match_info['animation2'] = animation_list[0]
-        elif len(animation_list) == 2:
-            match_info['animation1'] = animation_list[0]
-            match_info['animation2'] = animation_list[1]
-        match_info['web'] = match.get('vs', None).get('web', None)
-        match_info['flvHD'] = match.get('vs', None).get('flvHD', None)
-        match_info['flvSD'] = match.get('vs', None).get('flvSD', None)
-        match_info['m3u8HD'] = match.get('vs', None).get('m3u8HD', None)
-        match_info['m3u8SD'] = match.get('vs', None).get('m3u8SD', None)
+        match_info['id'] = match.get('id')
+        match_info['animation'] = match.get('as', '')
+        match_info['fid'] = match.get('fid', None)
+        match_info['fmt'] = match.get('fmt', None)
+        match_info['lg'] = match.get('lg', '')
+        match_info['mc'] = match.get('mc', '')
+        match_info['mg'] = match.get('mg', '')
+        match_info['ms'] = match.get('ms', None)
+        match_info['ne'] = match.get('ne', None)
+        match_info['nsg'] = match.get('nsg', '')
+        match_info['pl'] = match.get('pl', None)
+        match_info['sb'] = match.get('sb', '')
+        match_info['sid'] = match.get('sid', None)
+        match_info['smt'] = match.get('smt', None)
+        match_info['tms'] = match.get('tms', None)
+        match_info['tps'] = match.get('tps', '')
+        match_info['ts'] = match.get('ts', '')
+        match_info['ty'] = match.get('ty', None)
+        match_info['vs'] = match.get('vs', '')
         match_info_list.append(match_info)
     logger.info(f"Created match info for {len(match_info_list)} matches")
     return match_info_list
@@ -321,10 +313,10 @@ def fetch_data(mode):
             listRecods = listData.get('records', [])
             matchList.extend(listRecods)
     match_info_list = createMatch_info(matchList)
-    for match_info in match_info_list:
-        match_info['status'] = mode
-        statscore_id = getStatscore_id(match_info,'en')
-        match_info['statscore_id'] = statscore_id
+    # for match_info in match_info_list:
+    #     match_info['status'] = mode
+    #     statscore_id = getStatscore_id(match_info,'en')
+    #     match_info['statscore_id'] = statscore_id
     return match_info_list
 
 def getfileStreamByType(languageType):

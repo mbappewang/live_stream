@@ -9,70 +9,59 @@ from . import db
 class FbSport(db.Model):
     __tablename__ = 'fb'
 
-    match_id = db.Column(db.Integer, primary_key=True)
-    match_time = db.Column(db.BigInteger)
-    match_time_utc = db.Column(db.DateTime, default=datetime.utcnow)
-    match_period  = db.Column(db.Integer)
-    match_status = db.Column(db.Integer)
-    match_group = db.Column(db.JSON)
-    match_stats = db.Column(db.JSON)
-    regionName = db.Column(db.String(100))
-    regionId = db.Column(db.Integer)
-    regionUrl = db.Column(db.Text)
-    leagueName = db.Column(db.String(100))
-    leagueId = db.Column(db.Integer)
-    leagueUrl = db.Column(db.Text)
-    leagueOrder = db.Column(db.Integer)
-    leagueHot = db.Column(db.Boolean)
-    match_name = db.Column(db.String(100))
-    homeTeam = db.Column(db.String(100))
-    homeTeamUrl = db.Column(db.Text)
-    homeTeamId = db.Column(db.Integer)
-    awayTeam = db.Column(db.String(100))
-    awayTeamUrl = db.Column(db.Text)
-    awayTeamId = db.Column(db.Integer)
-    animation1 = db.Column(db.Text)
-    animation2 = db.Column(db.Text)
-    web = db.Column(db.Text)
-    flvHD = db.Column(db.Text)
-    flvSD = db.Column(db.Text)
-    m3u8HD = db.Column(db.Text)
-    m3u8SD = db.Column(db.Text)
-    statscore_id = db.Column(db.Integer)
-    status = db.Column(db.String(100))  # 比赛状态字段
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # 创建时间
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)  # 更新时间
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, nullable=True)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    nm = db.Column(db.Text, nullable=True)
+    match_time_unix = db.Column(db.BigInteger, nullable=True)
+    start_time = db.Column(db.DateTime, nullable=True)
+    animation = db.Column(db.JSON, nullable=True)
+    fid = db.Column(db.Integer, nullable=True)
+    fmt = db.Column(db.Integer, nullable=True)
+    lg = db.Column(db.JSON, nullable=True)
+    mc = db.Column(db.JSON, nullable=True)
+    mg = db.Column(db.JSON, nullable=True)
+    ms = db.Column(db.Integer, nullable=True)
+    ne = db.Column(db.Integer, nullable=True)
+    nsg = db.Column(db.JSON, nullable=True)
+    pl = db.Column(db.Integer, nullable=True)
+    sb = db.Column(db.JSON, nullable=True)
+    sid = db.Column(db.Integer, nullable=True)
+    smt = db.Column(db.Integer, nullable=True)
+    tms = db.Column(db.Integer, nullable=True)
+    tps = db.Column(db.JSON, nullable=True)
+    ts = db.Column(db.JSON, nullable=True)
+    ty = db.Column(db.Integer, nullable=True)
+    vs = db.Column(db.JSON, nullable=True)
 
     def to_json(self):
         """将模型转换为JSON格式，用于API响应"""
-        logger.info(f"Converting match_id {self.match_id} to JSON")
+        logger.info(f"Converting id {self.id} to JSON")
         return {
-            'match_id': self.match_id,
-            'match_time': self.match_time,
-            'regionName': self.regionName,
-            'regionId': self.regionId,
-            'regionUrl': self.regionUrl,
-            'leagueName': self.leagueName,
-            'leagueId': self.leagueId,
-            'leagueUrl': self.leagueUrl,
-            'match_name': self.match_name,
-            'homeTeam': self.homeTeam,
-            'homeTeamUrl': self.homeTeamUrl,
-            'homeTeamId': self.homeTeamId,
-            'awayTeam': self.awayTeam,
-            'awayTeamUrl': self.awayTeamUrl,
-            'awayTeamId': self.awayTeamId,
-            'animation1': self.animation1,
-            'animation2': self.animation2,
-            'web': self.web,
-            'flvHD': self.flvHD,
-            'flvSD': self.flvSD,
-            'm3u8HD': self.m3u8HD,
-            'm3u8SD': self.m3u8SD,
-            'statscore_id': self.statscore_id,
-            'status': self.status,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'id': self.id,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'nm': self.nm,
+            'match_time_unix': self.match_time_unix,
+            'start_time': self.start_time.isoformat() if self.start_time else None,
+            'as': self.as_,
+            'fid': self.fid,
+            'fmt': self.fmt,
+            'lg': self.lg,
+            'mc': self.mc,
+            'mg': self.mg,
+            'ms': self.ms,
+            'ne': self.ne,
+            'nsg': self.nsg,
+            'pl': self.pl,
+            'sb': self.sb,
+            'sid': self.sid,
+            'smt': self.smt,
+            'tms': self.tms,
+            'tps': self.tps,
+            'ts': self.ts,
+            'ty': self.ty,
+            'vs': self.vs
         }
 
 class MatchInfo(db.Model):
