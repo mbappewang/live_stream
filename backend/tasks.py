@@ -1,9 +1,10 @@
 from . import db
-from .models import FbSport, MatchInfo, MarketInfo, MarketType, MatchPeriod, MatchStatus, MarketName, Period, StatsType, SportType, TournamentPhase, Animation, Stream, Region, League, Team
-import time
+from .models import FbSport,Animation
 from datetime import datetime
-from .spiders.my_spider import fetch_data
+from .spiders.my_spider import fetch_data,getStatscore_id,getStatscore
 import logging
+import time
+from sqlalchemy import and_
 
 logger = logging.getLogger(__name__)
 
@@ -15,16 +16,22 @@ def update_streams(data):
     """
     if data:
         logger.info(f"Updating streams with {len(data)} items")
-        # 获取数据库中已有的直播流记录，以id为键，存储在字典中
-        existing_streams = {stream.id: stream for stream in FbSport.query.filter(FbSport.id.in_([item['id'] for item in data])).all()}
+        # 获取数据库中已有的直播流记录，以(id, lang)为键，存储在字典中
+        existing_streams = {(stream.id, stream.lang): stream for stream in FbSport.query.filter(
+            and_(
+                FbSport.id.in_([item['id'] for item in data]),
+                FbSport.lang.in_([item['lang'] for item in data])
+            )
+        ).all()}
         
         # 用于存储新的直播流记录
         new_streams = []
         
         for item in data:
-            if item['id'] in existing_streams:
-                # 如果数据库中已有该id的记录，则更新该记录
-                stream = existing_streams[item['id']]
+            key = (item['id'], item['lang'])
+            if key in existing_streams:
+                # 如果数据库中已有该(id, lang)的记录，则更新该记录
+                stream = existing_streams[key]
                 stream.created_at = item.get('created_at', stream.created_at)
                 stream.updated_at = datetime.utcnow()
                 stream.nm = item.get('nm', stream.nm)
@@ -48,11 +55,12 @@ def update_streams(data):
                 stream.ts = item.get('ts', stream.ts)
                 stream.ty = item.get('ty', stream.ty)
                 stream.vs = item.get('vs', stream.vs)
-                logger.info(f"Updated stream with id {item['id']}")
+                # logger.info(f"Updated stream with id {item['id']} and lang {item['lang']}")
             else:
-                # 如果数据库中没有该id的记录，则创建新记录
+                # 如果数据库中没有该(id, lang)的记录，则创建新记录
                 new_stream = FbSport(
                     id=item['id'],
+                    lang=item['lang'],
                     created_at=item.get('created_at', datetime.utcnow()),
                     updated_at=datetime.utcnow(),
                     nm=item.get('nm', ''),
@@ -78,16 +86,37 @@ def update_streams(data):
                     vs=item.get('vs', '')
                 )
                 new_streams.append(new_stream)
-                logger.info(f"Created new stream with id {item['id']}")
+                # logger.info(f"Created new stream with id {item['id']} and lang {item['lang']}")
         
         # 批量插入新记录
         if new_streams:
             db.session.bulk_save_objects(new_streams)
-            logger.info(f"Inserted {len(new_streams)} new streams")
+            # logger.info(f"Inserted {len(new_streams)} new streams")
         
         # 提交所有更改到数据库
         db.session.commit()
-        logger.info("Committed all changes to the database")
+        # logger.info("Committed all changes to the database")
+
+lang_dict = {
+    "BRA": "pt-BR",
+    "CMN": "zh-CN",
+    "DEU": "de",
+    "ENG": "en",
+    "FRA": "fr",
+    "HIN": "hi",
+    "IND": "id",
+    "JPN": "ja",
+    "KOR": "ko",
+    "MSA": "ms",
+    "RUS": "ru",
+    "SAU": "ar",
+    "SPA": "es",
+    "THA": "th",
+    "TR": "tr",
+    "VIE": "vi",
+    "ZHO": "zh"
+}
+
 
 def update_live_streams():
     """后台任务：定期更新直播流状态（live）
@@ -95,13 +124,15 @@ def update_live_streams():
     运行间隔：每60秒执行一次
     """
     while True:
-        try:
-            # 调用爬虫程序获取数据
-            data = fetch_data('滚球')
-            update_streams(data)
-        except Exception as e:
-            logger.error(f"Error updating live stream status: {e}")
-        time.sleep(0)  # 休眠60秒
+        for k,v in lang_dict.items():
+            try:
+                # 调用爬虫程序获取数据
+                data = fetch_data('滚球',k,v)
+                update_streams(data)
+            except Exception as e:
+                logger.error(f"Error updating live stream status: {e}")
+        #     time.sleep(0)
+        # time.sleep(0)  # 休眠60秒
 
 def update_upcoming_streams():
     """后台任务：定期更新即将到来的直播流状态（upcoming）
@@ -109,13 +140,15 @@ def update_upcoming_streams():
     运行间隔：每3600秒（1小时）执行一次
     """
     while True:
-        try:
-            # 调用爬虫程序获取数据
-            data = fetch_data('今日')
-            update_streams(data)
-        except Exception as e:
-            logger.error(f"Error updating upcoming stream status: {e}")
-        time.sleep(3600)  # 休眠3600秒（1小时）
+        for k,v in lang_dict.items():
+            try:
+                # 调用爬虫程序获取数据
+                data = fetch_data('今日',k,v)
+                update_streams(data)
+            except Exception as e:
+                logger.error(f"Error updating upcoming stream status: {e}")
+            time.sleep(60)
+        time.sleep(1800)  # 休眠3600秒（1小时）
 
 def update_prematch_streams():
     """后台任务：定期更新预赛直播流状态（prematch）
@@ -123,30 +156,98 @@ def update_prematch_streams():
     运行间隔：每天执行一次
     """
     while True:
+        for k,v in lang_dict.items():
+            try:
+                # 调用爬虫程序获取数据
+                data = fetch_data('早盘',k,v)
+                update_streams(data)
+            except Exception as e:
+                logger.error(f"Error updating prematch stream status: {e}")
+            time.sleep(60)
+        time.sleep(43200)  # 休眠86400秒（1天）
+
+def update_animation():
+    """后台任务：定期更新预赛直播流状态（prematch）
+    
+    运行间隔：每天执行一次
+    """
+    while True:
         try:
             # 调用爬虫程序获取数据
-            data = fetch_data('早盘')
-            update_streams(data)
+            data = getAnimations()
+            update_statscore_id(data)
         except Exception as e:
-            logger.error(f"Error updating prematch stream status: {e}")
-        time.sleep(86400)  # 休眠86400秒（1天）
+            logger.error(f"Error updating statscore_id: {e}")
+        time.sleep(60)
 
-# def update_finished_streams():
-#     """后台任务：定期更新已结束的比赛状态
-#     
-#     运行间隔：每天执行一次
-#     """
-#     while True:
-#         try:
-#             # 获取当前时间
-#             now = datetime.utcnow().timestamp()
-#             # 查找所有已结束的比赛（假设比赛结束时间在当前时间之前）
-#             finished_streams = FbSport.query.filter(FbSport.match_time < now).all()
-#             for stream in finished_streams:
-#                 # 更新比赛状态为已结束
-#                 stream.status = 'finished'
-#                 stream.updated_at = datetime.utcnow()
-#             db.session.commit()
-#         except Exception as e:
-#             logger.error(f"Error updating finished stream status: {e}")
-#         time.sleep(86400)  # 休眠86400秒（1天）
+
+def getAnimations():
+    """获取animation1有值且不为空字符串，同时statscore_id不为null的行"""
+    query = db.session.query(Animation.id, Animation.animation1).filter(
+        and_(
+            Animation.animation1.isnot(None),
+            Animation.animation1 != '',
+            Animation.statscore_id.is_(None)
+        )
+    )
+
+    # query = query.limit(10)
+
+    animations = query.all()
+
+    if not animations:
+        logger.info("No animations found with non-empty animation1 and non-null statscore_id.")
+        return []
+    statscore_id_list = []
+
+    for animation in animations:
+        id_as = {}
+        id_as['id'] = animation.id
+        id_as['statscore_id'] = getStatscore_id(animation.id,animation.animation1)
+        statscore_id_list.append(id_as)
+        # time.sleep(1)
+
+    return statscore_id_list
+
+def update_statscore_id(data):
+    """更新直播流数据
+    
+    参数:
+        data: 从爬虫获取的数据列表
+    """
+    if data:
+        logger.info(f"Updating streams with {len(data)} items")
+        # 获取数据库中已有的直播流记录，以(id, lang)为键，存储在字典中
+        existing_streams = {(stream.id): stream for stream in Animation.query.filter(
+            and_(
+                Animation.id.in_([item['id'] for item in data])
+            )
+        ).all()}
+        
+        # 用于存储新的直播流记录
+        new_streams = []
+        
+        for item in data:
+            key = (item['id'])
+            if key in existing_streams:
+                # 如果数据库中已有该(id, lang)的记录，则更新该记录
+                stream = existing_streams[key]
+                stream.statscore_id = item.get('statscore_id', stream.statscore_id)
+                logger.info(f"Updated id with id {item['id']} and statscore_id {item['statscore_id']}")
+            else:
+                # 如果数据库中没有该(id, lang)的记录，则创建新记录
+                new_stream = Animation(
+                    id=item['id'],
+                    statscore_id=item['statscore_id']
+                )
+                new_streams.append(new_stream)
+                logger.info(f"Created new id with id {item['id']} and statscore_id {item['statscore_id']}")
+        
+        # 批量插入新记录
+        if new_streams:
+            db.session.bulk_save_objects(new_streams)
+            logger.info(f"Inserted {len(new_streams)} statscore_id")
+        
+        # 提交所有更改到数据库
+        db.session.commit()
+        logger.info("Committed all changes to the database")

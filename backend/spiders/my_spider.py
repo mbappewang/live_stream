@@ -147,7 +147,7 @@ def getList(sportId,current,languageType,orderBy,type):
     logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
     return {}
 
-def createMatch_info(matchList):
+def createMatch_info(matchList,lang):
     match_info_list = []
     for match in matchList:
         match_info = {}
@@ -156,6 +156,7 @@ def createMatch_info(matchList):
         match_info['nm'] = match.get('nm', '')
         if match.get('id', 0) == 0:
             continue
+        match_info['lang'] = lang
         match_info['id'] = match.get('id')
         match_info['animation'] = match.get('as', '')
         match_info['fid'] = match.get('fid', None)
@@ -276,43 +277,39 @@ def getStatscore(url,lang,eventId,config_id):
     logger.error(f"更新Statscore数据失败，重试了 {max_retries} 次，仍未成功")
     return None
 
-def getStatscore_id(matchInfo,lang):
+def getStatscore_id(id,animation1):
     try:
-        if matchInfo['animation1'] is None:
-            logger.info(f"{matchInfo['match_name']}的animation1为空")
-            statscore_id = 0
-            return statscore_id
         startTime = datetime.now()
-        match = re.search(r'matchId=(\d+)', matchInfo['animation1'])
-        config = re.search(r'configId=([a-fA-F0-9]+)', matchInfo['animation1'])
+        match = re.search(r'matchId=(\d+)', animation1)
+        config = re.search(r'configId=([a-fA-F0-9]+)', animation1)
         if not match or not config:
-            logger.error(f"{matchInfo['match_name']}正则匹配 match 或 config 失败: {matchInfo['animation_list']}")
+            logger.error(f"{id}正则匹配 match 或 config 失败: {animation1}")
             return None
         match_id = match.group(1)
         config_id = config.group(1)
-        Statscore = getStatscore(matchInfo['animation1'],'en',match_id,config_id)
-        key = f'event|eventId:{match_id}|language:{lang}|timezoneOffset:-480'
+        Statscore = getStatscore(animation1,'en',match_id,config_id)
+        key = f'event|eventId:{match_id}|language:en|timezoneOffset:-480'
         statscore_id = Statscore.get('state', {}).get('fetchHistory', {}).get(key, {}).get('result', {}).get('season', {}).get('stage', {}).get('group', {}).get('event', {}).get('ls_id', None)
         endTime = datetime.now()
-        logger.info(f"{matchInfo['match_name']}获取Statscore ID成功: {statscore_id} 用时{endTime - startTime}")
+        logger.info(f"{id}获取Statscore ID成功: {statscore_id} 用时{endTime - startTime}")
         return statscore_id
     except Exception as e:
-        logger.error(f"{matchInfo['match_name']}获取Statscore ID失败: {e}")
+        logger.error(f"{id}获取Statscore ID失败: {e}")
         return None
 
 # getList(sportId,current,languageType,orderBy,type):
-def fetch_data(mode):
+def fetch_data(mode,language,lang):
     matchList = []
     slList = createTask()
     slListMode = [i for i in slList if i.get('des') == mode]
     for sl in slListMode:
         logger.info(f"Fetching data for {sl}")
         for i in range(1,sl.get('pageTotal')+1):
-            listResponse = getList(sl.get('sportId'),i,'CMN',1,sl.get('type'))
+            listResponse = getList(sl.get('sportId'),i,language,1,sl.get('type'))
             listData = listResponse.get('data', {})
             listRecods = listData.get('records', [])
             matchList.extend(listRecods)
-    match_info_list = createMatch_info(matchList)
+    match_info_list = createMatch_info(matchList,lang)
     # for match_info in match_info_list:
     #     match_info['status'] = mode
     #     statscore_id = getStatscore_id(match_info,'en')

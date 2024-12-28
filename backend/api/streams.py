@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from . import api  # 确保 api 蓝图已正确注册
-from ..models import FbSport  # 确保 FbSport 模型已正确定义
+from ..models import FbSport
 from .. import db
 from datetime import datetime
 import logging
@@ -9,59 +9,90 @@ logger = logging.getLogger(__name__)
 
 @api.route('/streams', methods=['GET'])
 def get_streams():
-    """获取所有直播流列表
-    返回: JSON格式的直播流列表
-    """
-    try:
-        streams = FbSport.query.all()  # 确保数据库连接正常，并且 FbSport 模型中有数据
-        logger.info(f"Fetched {len(streams)} streams")
-        return jsonify({'streams': [stream.to_json() for stream in streams]})  # 确保 FbSport 模型中有 to_json 方法
-    except Exception as e:
-        logger.error(f"Error fetching streams: {e}")
-        return jsonify({'error': 'Error fetching streams'}), 500
+    """获取所有流媒体记录"""
+    logger.info("Fetching all streams")
+    streams = FbSport.query.all()
+    return jsonify([stream.to_json() for stream in streams])
 
-@api.route('/streams/search', methods=['GET'])
-def search_streams():
-    """根据regionId和leagueId请求比赛信息
-    参数: regionId - 地区ID, leagueId - 联赛ID
-    返回: JSON格式的比赛信息列表
-    """
-    region_id = request.args.get('regionId', type=int)
-    league_id = request.args.get('leagueId', type=int)
-    
-    if region_id is None or league_id is None:
-        logger.error("Missing regionId or leagueId")
-        return jsonify({'error': 'Missing regionId or leagueId'}), 400
-    
-    try:
-        streams = FbSport.query.filter_by(regionId=region_id, leagueId=league_id).all()
-        logger.info(f"Fetched {len(streams)} streams for regionId {region_id} and leagueId {league_id}")
-        return jsonify({'streams': [stream.to_json() for stream in streams]})
-    except Exception as e:
-        logger.error(f"Error searching streams: {e}")
-        return jsonify({'error': 'Error searching streams'}), 500
+@api.route('/streams/<int:id>', methods=['GET'])
+def get_stream(id):
+    """根据ID获取单个流媒体记录"""
+    logger.info(f"Fetching stream with id {id}")
+    stream = FbSport.query.get_or_404(id)
+    return jsonify(stream.to_json())
 
-@api.route('/streams/match/<int:match_id>', methods=['GET'])
-def get_stream_by_match_id(match_id):
-    """根据match_id请求比赛信息
-    参数: match_id - 比赛ID
-    返回: JSON格式的比赛信息
-    """
-    try:
-        stream = FbSport.query.filter_by(match_id=match_id).first()
-        if stream is None:
-            logger.error(f"Match with match_id {match_id} not found")
-            return jsonify({'error': 'Match not found'}), 404
-        logger.info(f"Fetched stream for match_id {match_id}")
-        return jsonify(stream.to_json())
-    except Exception as e:
-        logger.error(f"Error fetching stream by match_id: {e}")
-        return jsonify({'error': 'Error fetching stream by match_id'}), 500
+@api.route('/streams', methods=['POST'])
+def create_stream():
+    """创建新的流媒体记录"""
+    data = request.get_json()
+    logger.info("Creating a new stream with data: %s", data)
+    stream = FbSport(
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+        nm=data.get('nm'),
+        match_time_unix=data.get('match_time_unix'),
+        start_time=datetime.fromisoformat(data.get('start_time')) if data.get('start_time') else None,
+        animation=data.get('animation'),
+        fid=data.get('fid'),
+        fmt=data.get('fmt'),
+        lg=data.get('lg'),
+        mc=data.get('mc'),
+        mg=data.get('mg'),
+        ms=data.get('ms'),
+        ne=data.get('ne'),
+        nsg=data.get('nsg'),
+        pl=data.get('pl'),
+        sb=data.get('sb'),
+        sid=data.get('sid'),
+        smt=data.get('smt'),
+        tms=data.get('tms'),
+        tps=data.get('tps'),
+        ts=data.get('ts'),
+        ty=data.get('ty'),
+        vs=data.get('vs')
+    )
+    db.session.add(stream)
+    db.session.commit()
+    return jsonify(stream.to_json()), 201
 
-@api.route('/helloworld', methods=['GET'])
-def hello_world():
-    """简单的Hello World API
-    返回: JSON格式的Hello World消息
-    """
-    logger.info("Hello World API called")
-    return jsonify({'message': 'Hello, World!'})
+@api.route('/streams/<int:id>', methods=['PUT'])
+def update_stream(id):
+    """更新现有的流媒体记录"""
+    data = request.get_json()
+    logger.info(f"Updating stream with id {id} with data: %s", data)
+    stream = FbSport.query.get_or_404(id)
+    stream.updated_at = datetime.utcnow()
+    stream.nm = data.get('nm', stream.nm)
+    stream.match_time_unix = data.get('match_time_unix', stream.match_time_unix)
+    stream.start_time = datetime.fromisoformat(data.get('start_time')) if data.get('start_time') else stream.start_time
+    stream.animation = data.get('animation', stream.animation)
+    stream.fid = data.get('fid', stream.fid)
+    stream.fmt = data.get('fmt', stream.fmt)
+    stream.lg = data.get('lg', stream.lg)
+    stream.mc = data.get('mc', stream.mc)
+    stream.mg = data.get('mg', stream.mg)
+    stream.ms = data.get('ms', stream.ms)
+    stream.ne = data.get('ne', stream.ne)
+    stream.nsg = data.get('nsg', stream.nsg)
+    stream.pl = data.get('pl', stream.pl)
+    stream.sb = data.get('sb', stream.sb)
+    stream.sid = data.get('sid', stream.sid)
+    stream.smt = data.get('smt', stream.smt)
+    stream.tms = data.get('tms', stream.tms)
+    stream.tps = data.get('tps', stream.tps)
+    stream.ts = data.get('ts', stream.ts)
+    stream.ty = data.get('ty', stream.ty)
+    stream.vs = data.get('vs', stream.vs)
+    db.session.commit()
+    return jsonify(stream.to_json())
+
+@api.route('/streams/<int:id>', methods=['DELETE'])
+def delete_stream(id):
+    """删除流媒体记录"""
+    logger.info(f"Deleting stream with id {id}")
+    stream = FbSport.query.get_or_404(id)
+    db.session.delete(stream)
+    db.session.commit()
+    return '', 204
+
+
