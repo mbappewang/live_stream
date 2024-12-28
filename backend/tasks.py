@@ -251,6 +251,7 @@ def update_statscore_id(data):
         # 提交所有更改到数据库
         db.session.commit()
         logger.info("Committed all changes to the database")
+        update_hub88_event()
     
 
 def update_hub88_event():
@@ -265,7 +266,7 @@ def update_hub88_event():
             update_hub88(data)
         except Exception as e:
             logger.error(f"Error updating statscore_id: {e}")
-        time.sleep(3600)
+        time.sleep(0)
     return
 
 def update_hub88(data):

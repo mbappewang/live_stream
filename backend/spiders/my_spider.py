@@ -62,7 +62,7 @@ def statistical(languageType):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched statistical data on attempt {attempt + 1}")
+                # logger.info(f"Successfully fetched statistical data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -136,7 +136,7 @@ def getList(sportId,current,languageType,orderBy,type):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched list data on attempt {attempt + 1}")
+                # logger.info(f"Successfully fetched list data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -180,7 +180,7 @@ def createMatch_info(matchList,lang):
         match_info['ty'] = match.get('ty', None)
         match_info['vs'] = match.get('vs', '')
         match_info_list.append(match_info)
-    logger.info(f"Created match info for {len(match_info_list)} matches")
+    # logger.info(f"Created match info for {len(match_info_list)} matches")
     return match_info_list
 
 def new_createMatch_info(matchList,lang):
@@ -266,7 +266,7 @@ def getStatscore(url,lang,eventId,config_id):
             response = requests.get(full_url, headers=headers, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched Statscore data on attempt {attempt + 1}")
+                # logger.info(f"Successfully fetched Statscore data on attempt {attempt + 1}")
                 return response.json()
         
             logger.error(f"更新Statscore数据失败, 状态码: {response.status_code}")
@@ -352,7 +352,7 @@ def getfileStreamByType(languageType):
             response = requests.post(url, headers = headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                # logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新LiveMatchList数据失败, 状态码: {response.status_code}")
@@ -384,7 +384,7 @@ def get_token():
     clientId = current_app.config.get('CLIENTID')
     password = current_app.config.get('PASSWORD')
     payload = {'clientId': clientId, 'password': password}
-    logger.info(f"请求token clientId: {clientId} password: {password}")
+    # logger.info(f"请求token clientId: {clientId} password: {password}")
     max_retries = 10
     timeout = 10
     for attempt in range(max_retries):
@@ -392,7 +392,7 @@ def get_token():
             response = requests.post(url, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"请求token成功 on attempt {attempt + 1}")
+                # logger.info(f"请求token成功 on attempt {attempt + 1}")
                 token = response.text
                 return token
 
@@ -511,7 +511,7 @@ def get_matched_event():
     eventIds = query.all()
 
     if not eventIds:
-        logger.info("No eventIds found with non-empty eventIds and non-null eventIds.")
+        # logger.info("No eventIds found with non-empty eventIds and non-null eventIds.")
         return []
     eventIds_list = []
 
@@ -531,11 +531,16 @@ def fetch_hub88():
         schedule_list = []
         today = datetime.today()
         future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(3)]
+        s = 0
         for sportId in sportIds:
+            s += 1
+            d = 0
             for date in future_dates:
                 schedule = get_schedule_nolimit_location(token, date, [sportId])
                 schedule = [i.get('id') for i in schedule if i.get('id') not in get_matched_event()]
                 schedule_list.extend(schedule)
+                d += 1
+                logger.info(f"获取hub88数据进度: {s}/{len(sportIds)} {d}/{len(future_dates)}")
 
         metadata_list = []
         if not schedule_list:
@@ -547,6 +552,8 @@ def fetch_hub88():
             metadata = get_metadata(token, eventId)
             StatsCoredata = getStatscoreId(metadata)
             if not StatsCoredata:
+                i += 1
+                logger.info(f"获取hub88数据进度: {i}/{len(schedule_list)}")
                 continue
             statscore_id = extract_number(StatsCoredata)
             metadata_dict['eventId'] = eventId
@@ -554,8 +561,6 @@ def fetch_hub88():
             logger.info(f"获取hub88 statscore_id数据成功: {statscore_id}")
             metadata_list.append(metadata_dict)
             i += 1
-            if i == 10:
-                return metadata_list
             logger.info(f"获取hub88数据进度: {i}/{len(schedule_list)}")
 
 
