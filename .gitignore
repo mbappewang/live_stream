@@ -35,3 +35,4 @@ dist/
 # Environment variables file
 .env
 log/spider.log
+log/
