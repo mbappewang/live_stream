@@ -530,7 +530,7 @@ def fetch_hub88():
         sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
         schedule_list = []
         today = datetime.today()
-        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(3)]
+        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(9)]
         s = 0
         for sportId in sportIds:
             s += 1
