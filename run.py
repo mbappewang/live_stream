@@ -52,13 +52,6 @@ if __name__ == '__main__':
         hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
         hub88_thread.start()
         logger.info("Started hub88 update thread")
-
-
-        
-        # finished_thread = threading.Thread(target=lambda: run_with_app_context(update_finished_streams))
-        # finished_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # finished_thread.start()
-        # logger.info("Started finished stream update thread")
         
         # 启动Flask Web服务器
         app.run(debug=False)
