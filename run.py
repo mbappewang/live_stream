@@ -61,7 +61,7 @@ if __name__ == '__main__':
         # logger.info("Started finished stream update thread")
         
         # 启动Flask Web服务器
-        app.run(debug=True)
+        app.run(debug=False)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")

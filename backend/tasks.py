@@ -131,8 +131,8 @@ def update_live_streams():
                 update_streams(data)
             except Exception as e:
                 logger.error(f"Error updating live stream status: {e}")
-        #     time.sleep(0)
-        # time.sleep(0)  # 休眠60秒
+            time.sleep(1)
+        time.sleep(1)  # 休眠60秒
 
 def update_upcoming_streams():
     """后台任务：定期更新即将到来的直播流状态（upcoming）
@@ -147,7 +147,7 @@ def update_upcoming_streams():
                 update_streams(data)
             except Exception as e:
                 logger.error(f"Error updating upcoming stream status: {e}")
-            time.sleep(60)
+            time.sleep(120)
         time.sleep(1800)  # 休眠3600秒（1小时）
 
 def update_prematch_streams():
@@ -163,7 +163,7 @@ def update_prematch_streams():
                 update_streams(data)
             except Exception as e:
                 logger.error(f"Error updating prematch stream status: {e}")
-            time.sleep(60)
+            time.sleep(1200)
         time.sleep(43200)  # 休眠86400秒（1天）
 
 def update_animation():
@@ -251,6 +251,7 @@ def update_statscore_id(data):
         # 提交所有更改到数据库
         db.session.commit()
         logger.info("Committed all changes to the database")
+    
 
 def update_hub88_event():
     """后台任务：定期更新预赛直播流状态（hub88event）
