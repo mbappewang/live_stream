@@ -48,10 +48,10 @@ if __name__ == '__main__':
         animation_thread.start()
         logger.info("Started animation update thread")
 
-        # hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
-        # hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # hub88_thread.start()
-        # logger.info("Started hub88 update thread")
+        hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
+        hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        hub88_thread.start()
+        logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
         app.run(debug=False)

@@ -251,7 +251,7 @@ def update_statscore_id(data):
         # 提交所有更改到数据库
         db.session.commit()
         logger.info("Committed all changes to the database")
-        update_hub88_event()
+        # update_hub88_event()
     
 
 def update_hub88_event():
@@ -259,14 +259,26 @@ def update_hub88_event():
     
     运行间隔：每天执行一次
     """
-    while True:
+    existing_streams = [{(stream.statscore_id): stream for stream in Animation.query.filter(
+        and_(
+            Animation.eventId.is_(None),
+            Animation.statscore_id.isnot(None)
+        )
+    ).all()}]
+
+    # if not existing_streams:
+    #     logger.info("No animations found with non-empty animation1 and non-null statscore_id.")
+    #     return
+
+    while existing_streams:
         try:
             # 调用爬虫程序获取数据
+            # logger.info(f"开始抓取hub88:{len(existing_streams)},{existing_streams}")
             data = fetch_hub88()
             update_hub88(data)
         except Exception as e:
             logger.error(f"Error updating statscore_id: {e}")
-        time.sleep(0)
+        time.sleep(3600)
     return
 
 def update_hub88(data):
