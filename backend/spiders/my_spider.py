@@ -417,7 +417,7 @@ def get_sports(token):
             response = requests.get(url, headers=headers, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"请求运动列表成功:  data on attempt {attempt + 1}")
+                # logger.info(f"请求运动列表成功:  data on attempt {attempt + 1}")
                 data = response.json()
                 return data
 
@@ -443,7 +443,7 @@ def get_schedule_nolimit_location(token,startDate,sportIds):
             response = requests.post(url, headers=headers, json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"请求{startDate} {sportIds} 比赛列表成功:  data on attempt {attempt + 1}")
+                # logger.info(f"请求{startDate} {sportIds} 比赛列表成功:  data on attempt {attempt + 1}")
                 data = response.json()
                 return data
 
@@ -468,7 +468,7 @@ def get_metadata(token, eventId):
             response = requests.get(url, headers=headers, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"请求metadata成功:  data on attempt {attempt + 1}")
+                # logger.info(f"请求metadata成功:  data on attempt {attempt + 1}")
                 data = response.json()
                 return data
 
