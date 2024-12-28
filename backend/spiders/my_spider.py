@@ -547,7 +547,7 @@ def fetch_hub88():
             return []
         i = 0
         for eventId in schedule_list:
-            logger.info(f"获取hub88数据: {eventId}")
+            # logger.info(f"获取hub88数据: {eventId}")
             metadata_dict = {}
             metadata = get_metadata(token, eventId)
             StatsCoredata = getStatscoreId(metadata)
@@ -558,7 +558,7 @@ def fetch_hub88():
             statscore_id = extract_number(StatsCoredata)
             metadata_dict['eventId'] = eventId
             metadata_dict['statscore_id'] = statscore_id
-            logger.info(f"获取hub88 statscore_id数据成功: {statscore_id}")
+            # logger.info(f"获取hub88 statscore_id数据成功: {statscore_id}")
             metadata_list.append(metadata_dict)
             i += 1
             logger.info(f"获取hub88数据进度: {i}/{len(schedule_list)}")
