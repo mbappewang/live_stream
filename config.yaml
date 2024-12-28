@@ -3,6 +3,8 @@ default:
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data"
   SPIDER_URL: "http://example.com/data"
   AUTHORIZATION: "tt_KfHOkYjg2Evg05gaaox6uogTxslYRov7.dc338b7fe3b2c20796df1b9b4da93831"
+  CLIENTID: "dev@wintokens"
+  PASSWORD: "4gajfBk8mNdapHdJ4xfd"
 
 development:
   DEBUG: true

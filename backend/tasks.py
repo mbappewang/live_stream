@@ -1,7 +1,7 @@
 from . import db
 from .models import FbSport,Animation
 from datetime import datetime
-from .spiders.my_spider import fetch_data,getStatscore_id,getStatscore
+from .spiders.my_spider import fetch_data,getStatscore_id,fetch_hub88,fetch_basic_data
 import logging
 import time
 from sqlalchemy import and_
@@ -242,6 +242,66 @@ def update_statscore_id(data):
                 )
                 new_streams.append(new_stream)
                 logger.info(f"Created new id with id {item['id']} and statscore_id {item['statscore_id']}")
+        
+        # 批量插入新记录
+        if new_streams:
+            db.session.bulk_save_objects(new_streams)
+            logger.info(f"Inserted {len(new_streams)} statscore_id")
+        
+        # 提交所有更改到数据库
+        db.session.commit()
+        logger.info("Committed all changes to the database")
+
+def update_hub88_event():
+    """后台任务：定期更新预赛直播流状态（hub88event）
+    
+    运行间隔：每天执行一次
+    """
+    while True:
+        try:
+            # 调用爬虫程序获取数据
+            data = fetch_hub88()
+            update_hub88(data)
+        except Exception as e:
+            logger.error(f"Error updating statscore_id: {e}")
+        time.sleep(3600)
+    return
+
+def update_hub88(data):
+    """更新直播流数据
+    
+    参数:
+        data: 从爬虫获取的数据列表
+    """
+    if data:
+        logger.info(f"Updating streams with {len(data)} items")
+        # 获取数据库中已有的直播流记录，以(id, lang)为键，存储在字典中
+        existing_streams = {(stream.statscore_id): stream for stream in Animation.query.filter(
+            and_(
+                # Animation.statscore_id.in_([item['statscore_id'] for item in data]),
+                Animation.statscore_id.isnot(None),
+                Animation.statscore_id != ''
+            )
+        ).all()}
+        
+        # 用于存储新的直播流记录
+        new_streams = []
+        
+        for item in data:
+            key = (item['statscore_id'])
+            if key in existing_streams:
+                # 如果数据库中已有该(id, lang)的记录，则更新该记录
+                stream = existing_streams[key]
+                stream.eventId = item.get('eventId', stream.eventId)
+                logger.info(f"Updated id with statscore_id {item['statscore_id']} and eventId {item['eventId']}")
+            # else:
+            #     # 如果数据库中没有该(id, lang)的记录，则创建新记录
+            #     new_stream = Animation(
+            #         statscore_id=item['statscore_id'],
+            #         eventId=item['eventId']
+            #     )
+                # new_streams.append(new_stream)
+                logger.info(f"Created new id with statscore_id {item['statscore_id']} and eventId {item['eventId']}")
         
         # 批量插入新记录
         if new_streams:

@@ -46,7 +46,7 @@ class FbSport(db.Model):
             'nm': self.nm,
             'match_time_unix': self.match_time_unix,
             'start_time': self.start_time.isoformat() if self.start_time else None,
-            'animation': self.animation,
+            'as': self.as_,
             'fid': self.fid,
             'fmt': self.fmt,
             'lg': self.lg,
@@ -68,9 +68,8 @@ class FbSport(db.Model):
 
 class Animation(db.Model):
     __tablename__ = 'animation'
-
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     animation1 = db.Column(db.Text, nullable=True)
     animation2 = db.Column(db.Text, nullable=True)
     statscore_id = db.Column(db.Integer, nullable=True)
-
+    eventId = db.Column(db.Integer, nullable=True)

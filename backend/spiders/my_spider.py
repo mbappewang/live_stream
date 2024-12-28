@@ -6,7 +6,10 @@ import datetime
 import urllib
 from flask import current_app
 import math
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from .. import db
+from ..models import FbSport,Animation
+from sqlalchemy import and_
 
 # 配置日志系统
 logging.basicConfig(
@@ -375,3 +378,185 @@ def fetch_basic_data(table):
             data['name'] = v
             basicList.append(data)
     return basicList
+
+def get_token():
+    url = 'https://wintokens-dev-tradeart-api.trading.io/api/Account/login'
+    clientId = current_app.config.get('CLIENTID')
+    password = current_app.config.get('PASSWORD')
+    payload = {'clientId': clientId, 'password': password}
+    logger.info(f"请求token clientId: {clientId} password: {password}")
+    max_retries = 10
+    timeout = 10
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"请求token成功 on attempt {attempt + 1}")
+                token = response.text
+                return token
+
+            logger.error(f"请求token失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求token超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求token发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"请求token失败，重试了 {max_retries} 次，仍未成功")
+    return None
+
+def get_sports(token):
+    url = 'https://wintokens-dev-tradeart-api.trading.io/api/schema/sports'
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"请求运动列表成功:  data on attempt {attempt + 1}")
+                data = response.json()
+                return data
+
+            logger.error(f"请求运动列表数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求运动列表超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求运动列表发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"请求运动列表失败，重试了 {max_retries} 次，仍未成功")
+    return []
+
+def get_schedule_nolimit_location(token,startDate,sportIds):
+    url = f'https://wintokens-dev-tradeart-api.trading.io/api/events/schedule/v2'
+    headers = {'Authorization': f'Bearer {token}'}
+    payload = {"startDate": startDate, 'sportIds': sportIds}
+    max_retries = 10
+    timeout = 10
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"请求{startDate} {sportIds} 比赛列表成功:  data on attempt {attempt + 1}")
+                data = response.json()
+                return data
+
+            logger.error(f"请求比赛列表数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求比赛列表超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求比赛列表发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"请求比赛列表失败，重试了 {max_retries} 次，仍未成功")
+    return []
+
+def get_metadata(token, eventId):
+    url = f'https://wintokens-dev-tradeart-api.trading.io/api/Metadata/event/all/{eventId}'
+    headers = {'Authorization': f'Bearer {token}'}
+    max_retries = 10
+    timeout = 10
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"请求metadata成功:  data on attempt {attempt + 1}")
+                data = response.json()
+                return data
+
+            logger.error(f"请求metadata数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求metadata超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求metadata发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"请求metadata失败，重试了 {max_retries} 次，仍未成功")
+    return []
+
+def getStatscoreId(datalist):
+    for i in datalist:
+        if i['dataType'] == 'StatsCoreIntegration':
+            id = i.get('data', None).get('Id', None)
+            return id
+    return None
+
+def extract_number(text):
+    match = re.search(r'm:(\d+)', text)
+    if match:
+        statscore_id = match.group(1)
+        return int(statscore_id)
+    return None
+
+def get_matched_event():
+    """获取animation1有值且不为空字符串，同时statscore_id不为null的行"""
+    query = db.session.query(Animation.eventId).filter(
+        and_(
+            Animation.eventId.isnot(None),
+            Animation.eventId != ''
+        )
+    )
+
+    # query = query.limit(10)
+
+    eventIds = query.all()
+
+    if not eventIds:
+        logger.info("No eventIds found with non-empty eventIds and non-null eventIds.")
+        return []
+    eventIds_list = []
+
+    for event in eventIds:
+        id = event.eventId
+        eventIds_list.append(id)
+        # time.sleep(1)
+    return eventIds_list
+
+
+def fetch_hub88():
+    with current_app.app_context():
+        token = get_token()
+        sportdata = get_sports(token)
+        blacklist = [457,458,459,820,358,26,787,1216,853]
+        sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
+        schedule_list = []
+        today = datetime.today()
+        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(3)]
+        for sportId in sportIds:
+            for date in future_dates:
+                schedule = get_schedule_nolimit_location(token, date, [sportId])
+                schedule = [i.get('id') for i in schedule if i.get('id') not in get_matched_event()]
+                schedule_list.extend(schedule)
+
+        metadata_list = []
+        if not schedule_list:
+            return []
+        i = 0
+        for eventId in schedule_list:
+            logger.info(f"获取hub88数据: {eventId}")
+            metadata_dict = {}
+            metadata = get_metadata(token, eventId)
+            StatsCoredata = getStatscoreId(metadata)
+            if not StatsCoredata:
+                continue
+            statscore_id = extract_number(StatsCoredata)
+            metadata_dict['eventId'] = eventId
+            metadata_dict['statscore_id'] = statscore_id
+            logger.info(f"获取hub88 statscore_id数据成功: {statscore_id}")
+            metadata_list.append(metadata_dict)
+            i += 1
+            if i == 10:
+                return metadata_list
+            logger.info(f"获取hub88数据进度: {i}/{len(schedule_list)}")
+
+
+        return metadata_list

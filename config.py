@@ -17,6 +17,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI')
     SPIDER_URL = config_data.get('SPIDER_URL')
     AUTHORIZATION = config_data.get('AUTHORIZATION')
+    CLIENTID = config_data.get('CLIENTID')
+    PASSWORD = config_data.get('PASSWORD')
     
     @staticmethod
     def init_app(app):
