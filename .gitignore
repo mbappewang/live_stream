@@ -32,7 +32,3 @@ dist/
 # Jupyter Notebooks checkpoints
 .ipynb_checkpoints/
 
-# Environment variables file
-.env
-log/spider.log
-log/

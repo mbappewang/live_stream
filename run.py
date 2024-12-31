@@ -5,16 +5,27 @@ from flask_migrate import Migrate
 import threading
 from backend.tasks import update_live_streams, update_upcoming_streams, update_prematch_streams, update_animation, update_hub88_event
 import logging
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
+# 加载.env文件中的环境变量
+load_dotenv()
+
+# 从环境变量中获取FLASK_CONFIG的值，默认为'default'
+config_name = os.getenv('FLASK_CONFIG')
+
 # 创建Flask应用实例
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app(config_name)
 # 初始化数据库迁移
 migrate = Migrate(app, db)
 
+def run_with_app_context(target):
+    with app.app_context():
+        target()
+
 if __name__ == '__main__':
-    app.run(port=20000)
+    port = int(os.environ.get('PORT', 20000))  # 默认端口为20000
     # 创建并启动后台状态更新线程
     def run_with_app_context(target):
         with app.app_context():
@@ -47,7 +58,7 @@ if __name__ == '__main__':
         # logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
-        app.run(debug=False)
+        app.run(port=port, debug=False, use_reloader=False)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")
