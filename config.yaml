@@ -1,0 +1,19 @@
+default:
+  SECRET_KEY: "hard-to-guess-string"
+  SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data"
+  AUTHORIZATION: "tt_p76cILLfo8TLzHtMfopGPF2UJtrYgI17.4c5e110ea089bd1fedc0c03194392523"
+
+development:
+  SECRET_KEY: "hard-to-guess-string"
+  SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data"
+  AUTHORIZATION: "tt_p76cILLfo8TLzHtMfopGPF2UJtrYgI17.4c5e110ea089bd1fedc0c03194392523"
+
+testing:
+  SECRET_KEY: "hard-to-guess-string"
+  SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:nLXirkxf6KPwLf5G@192.168.1.9/fb_data"
+  AUTHORIZATION: "tt_p76cILLfo8TLzHtMfopGPF2UJtrYgI17.4c5e110ea089bd1fedc0c03194392523"
+
+production:
+  SECRET_KEY: "hard-to-guess-string"
+  SQLALCHEMY_DATABASE_URI: "mysql+pymysql://fb_data:cKZJWbfxRWm3hWEw@107.191.60.19/fb_data"
+  AUTHORIZATION: "tt_p76cILLfo8TLzHtMfopGPF2UJtrYgI17.4c5e110ea089bd1fedc0c03194392523"
