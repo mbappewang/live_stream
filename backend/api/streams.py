@@ -95,4 +95,7 @@ def delete_stream(id):
     db.session.commit()
     return '', 204
 
-
+@api.route('/hello', methods=['GET'])
+def hello_world():
+    """返回Hello World"""
+    return jsonify(message="Hello, World!")
