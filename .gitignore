@@ -23,12 +23,13 @@ dist/
 *.log
 *.pot
 *.mo
+*.yaml
 
 # Test and coverage files
 .coverage/
 .tox/
 .pytest_cache/
-.yaml
+
 
 # Jupyter Notebooks checkpoints
 .ipynb_checkpoints/
