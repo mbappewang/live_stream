@@ -58,7 +58,7 @@ if __name__ == '__main__':
         # logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
-        app.run(port=port, debug=False, use_reloader=False)
+        app.run(port=port, debug=True, use_reloader=True)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")

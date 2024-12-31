@@ -46,7 +46,7 @@ class FbSport(db.Model):
             'nm': self.nm,
             'match_time_unix': self.match_time_unix,
             'start_time': self.start_time.isoformat() if self.start_time else None,
-            'as': self.as_,
+            'animation': self.animation,
             'fid': self.fid,
             'fmt': self.fmt,
             'lg': self.lg,
@@ -73,3 +73,42 @@ class Animation(db.Model):
     animation2 = db.Column(db.Text, nullable=True)
     statscore_id = db.Column(db.Integer, nullable=True)
     eventId = db.Column(db.Integer, nullable=True)
+
+class MatchInfo(db.Model):
+    __tablename__ = 'match_info'
+    
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    match_time_unix = db.Column(db.BigInteger, nullable=True)
+    start_time = db.Column(db.DateTime, nullable=True)
+    run_time = db.Column(db.Integer, nullable=True)
+    match_name = db.Column(db.Text, nullable=True)
+    period_id = db.Column(db.Integer, nullable=True)
+    status_id = db.Column(db.Integer, nullable=True)
+    sportId = db.Column(db.Integer, nullable=True)
+    regionId = db.Column(db.Integer, nullable=True)
+    leagueId = db.Column(db.Integer, nullable=True)
+    league_order = db.Column(db.Integer, nullable=True)
+    is_hot = db.Column(db.Boolean, nullable=True)
+    hometeamId = db.Column(db.Integer, nullable=True)
+    awayteamId = db.Column(db.Integer, nullable=True)
+    match_stats = db.Column(db.JSON, nullable=True)
+
+    def to_json(self):
+        """将模型转换为JSON格式，用于API响应"""
+        return {
+            'id': self.id,
+            'match_time_unix': self.match_time_unix,
+            'start_time': self.start_time.isoformat() if self.start_time else None,
+            'run_time': self.run_time,
+            'match_name': self.match_name,
+            'period_id': self.period_id,
+            'status_id': self.status_id,
+            'sportId': self.sportId,
+            'regionId': self.regionId,
+            'leagueId': self.leagueId,
+            'league_order': self.league_order,
+            'is_hot': self.is_hot,
+            'hometeamId': self.hometeamId,
+            'awayteamId': self.awayteamId,
+            'match_stats': self.match_stats
+        }

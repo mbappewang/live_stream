@@ -6,5 +6,5 @@ logger = logging.getLogger(__name__)
 api = Blueprint('api', __name__)
 logger.info("API blueprint created")
 
-from . import streams
+from . import match
 logger.info("API routes imported")
