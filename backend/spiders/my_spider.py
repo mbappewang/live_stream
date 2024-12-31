@@ -274,9 +274,10 @@ def getStatscore_id(id,animation1):
 def fetch_data(mode,language,lang):
     matchList = []
     slList = createTask()
-    
+    # logger.info(f"Fetching data for {mode}")
     if mode != '结束':
         slListMode = [i for i in slList if i.get('des') == mode]
+        # print(slListMode)
         for sl in slListMode:
             logger.info(f"Fetching data for {sl}")
             for i in range(1,sl.get('pageTotal')+1):
@@ -288,17 +289,13 @@ def fetch_data(mode,language,lang):
     else:
         slListMode = [i for i in slList if i.get('des') == '早盘']
         for sl in slListMode:
-            logger.info(f"Fetching 已结束 data for {sl}")
+            logger.info(f"Fetching data for {sl}")
             # for i in range(1,sl.get('pageTotal')+1):
             listResponse = getMatchResultList(sl.get('sportId'),language)
             listData = listResponse.get('data', [])
             # listRecods = listData.get('records', [])
             matchList.extend(listData)
         match_info_list = result_createMatch_info(matchList,lang)
-    # for match_info in match_info_list:
-    #     match_info['status'] = mode
-    #     statscore_id = getStatscore_id(match_info,'en')
-    #     match_info['statscore_id'] = statscore_id
     return match_info_list
 
 def getfileStreamByType(languageType):
@@ -591,7 +588,7 @@ def getMatchResultList(sportId,languageType):
             response = requests.post(url,  json=payload, timeout=timeout)
             
             if response.status_code == 200:
-                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                # logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
                 return response.json()
 
             logger.error(f"更新resultList数据失败, 状态码: {response.status_code}")

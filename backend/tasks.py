@@ -133,7 +133,7 @@ def update_result_streams(data):
                     created_at=item.get('created_at', datetime.utcnow()),
                     updated_at=datetime.utcnow(),
                     ms=item.get('ms', ''),
-                    nsg=item.get('nsg', ''),
+                    nsg=item.get('nsg', '')
                 )
                 new_streams.append(new_stream)
                 # logger.info(f"Created new stream with id {item['id']} and lang {item['lang']}")
