@@ -93,7 +93,7 @@ def update_streams(data):
         
         # 提交所有更改到数据库
         db.session.commit()
-        # logger.info("Committed all changes to the database")
+        logger.info("Committed all changes to the database")
 
 
 def update_result_streams(data):
@@ -145,7 +145,7 @@ def update_result_streams(data):
         
         # 提交所有更改到数据库
         db.session.commit()
-        # logger.info("Committed all changes to the database")        
+        logger.info("Committed all changes to the database")        
 
 lang_dict = {
     "BRA": "pt-BR",
