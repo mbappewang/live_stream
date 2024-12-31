@@ -66,6 +66,26 @@ class FbSport(db.Model):
             'vs': self.vs
         }
 
+class FbResult(db.Model):
+    __tablename__ = 'fb_result'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    lang = db.Column(db.String(100), primary_key=True)
+    ms = db.Column(db.Integer, nullable=True)
+    nsg = db.Column(db.JSON, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=True)
+    updated_at = db.Column(db.DateTime, nullable=True)
+    def to_json(self):
+        """将模型转换为JSON格式，用于API响应"""
+        return {
+            'id': self.id,
+            'lang': self.lang,
+            'ms': self.ms,
+            'nsg': self.nsg,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+        }
+
 class Animation(db.Model):
     __tablename__ = 'animation'
     id = db.Column(db.Integer, primary_key=True, nullable=False)

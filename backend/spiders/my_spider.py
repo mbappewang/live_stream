@@ -162,18 +162,17 @@ def createMatch_info(matchList,lang):
         match_info['lang'] = lang
         match_info['id'] = match.get('id')
         match_info['animation'] = match.get('as', '')
-        match_info['fid'] = match.get('fid', None)
-        match_info['fmt'] = match.get('fmt', None)
+        match_info['fid'] = match.get('fid', '')
+        match_info['fmt'] = match.get('fmt', '')
         match_info['lg'] = match.get('lg', '')
         match_info['mc'] = match.get('mc', '')
         match_info['mg'] = match.get('mg', '')
-        match_info['ms'] = match.get('ms', None)
-        match_info['ne'] = match.get('ne', None)
+        match_info['ms'] = match.get('ms', '')
+        match_info['ne'] = match.get('ne', '')
         match_info['nsg'] = match.get('nsg', '')
         match_info['pl'] = match.get('pl', None)
         match_info['sb'] = match.get('sb', '')
-        match_info['sid'] = match.get('sid', None)
-        match_info['smt'] = match.get('smt', None)
+        match_info['sid'] = match.get('sid', '')
         match_info['tms'] = match.get('tms', None)
         match_info['tps'] = match.get('tps', '')
         match_info['ts'] = match.get('ts', '')
@@ -183,44 +182,15 @@ def createMatch_info(matchList,lang):
     # logger.info(f"Created match info for {len(match_info_list)} matches")
     return match_info_list
 
-def new_createMatch_info(matchList,lang):
+def result_createMatch_info(matchList,lang):
     match_info_list = []
     for match in matchList:
         match_info = {}
         match_info['id'] = match.get('id', '')
         match_info['lang'] = lang
-        match_info['match_time_unix'] = match.get('bt', 0)/1000
-        match_info['start_time'] = datetime.fromtimestamp(match_info['match_time_unix'], tz=timezone.utc)
-        match_info['match_name'] = match.get('nm', '')
-        match_info['period_id'] = match.get('mc', {}).get('pe', '')
-        match_info['status_id'] = match.get('ms', '')
-        match_info['sportId'] = match.get('sid', '')
-        match_info['regionId'] = match.get('lg', {}).get('rid', '')
-        match_info['leagueId'] = match.get('lg', {}).get('id', '')
-        match_info['league_order'] = match.get('lg', {}).get('or', '')
-        match_info['is_hot'] = match.get('lg', {}).get('hot', '')
-        match_info['hometeamId'] = match.get('ts', {})[0].get('id', '')
-        match_info['hometeamUrl'] = match.get('ts', {})[0].get('lurl', '')
-        match_info['hometeamName'] = match.get('ts', {})[0].get('na', '')
-        match_info['awayteamId'] = match.get('ts', {})[1].get('id', '')
-        match_info['awayteamUrl'] = match.get('ts', {})[1].get('lurl', '')
-        match_info['awayteamName'] = match.get('ts', {})[1].get('na', '')
-        match_info['match_stats'] = match.get('nsg', {})
-        match_info['market'] = match.get('mg', {})
-        if len(match.get('as', [])) == 0:
-            match_info['animation1'] = ''
-            match_info['animation2'] = ''
-        elif len(match.get('as', [])) == 1:
-            match_info['animation1'] = ''
-            match_info['animation2'] = match.get('as', [])[0]
-        else:
-            match_info['animation1'] = match.get('as', [])[0]
-            match_info['animation2'] = match.get('as', [])[1]
-        match_info['web'] = match.get('vs', {}).get('web', '')
-        match_info['flvHD'] = match.get('vs', {}).get('flvHD', '')
-        match_info['flvSD'] = match.get('vs', {}).get('flvSD', '')
-        match_info['m3u8HD'] = match.get('vs', {}).get('m3u8HD', '')
-        match_info['m3u8SD'] = match.get('vs', {}).get('m3u8SD', '')
+        match_info['ms'] = match.get('ms', '')
+        match_info['nsg'] = match.get('nsg', '')
+
         match_info_list.append(match_info)
     return match_info_list
 
@@ -304,15 +274,27 @@ def getStatscore_id(id,animation1):
 def fetch_data(mode,language,lang):
     matchList = []
     slList = createTask()
-    slListMode = [i for i in slList if i.get('des') == mode]
-    for sl in slListMode:
-        logger.info(f"Fetching data for {sl}")
-        for i in range(1,sl.get('pageTotal')+1):
-            listResponse = getList(sl.get('sportId'),i,language,1,sl.get('type'))
-            listData = listResponse.get('data', {})
-            listRecods = listData.get('records', [])
-            matchList.extend(listRecods)
-    match_info_list = createMatch_info(matchList,lang)
+    
+    if mode != '结束':
+        slListMode = [i for i in slList if i.get('des') == mode]
+        for sl in slListMode:
+            logger.info(f"Fetching data for {sl}")
+            for i in range(1,sl.get('pageTotal')+1):
+                listResponse = getList(sl.get('sportId'),i,language,1,sl.get('type'))
+                listData = listResponse.get('data', {})
+                listRecods = listData.get('records', [])
+                matchList.extend(listRecods)
+        match_info_list = createMatch_info(matchList,lang)
+    else:
+        slListMode = [i for i in slList if i.get('des') == '早盘']
+        for sl in slListMode:
+            logger.info(f"Fetching 已结束 data for {sl}")
+            # for i in range(1,sl.get('pageTotal')+1):
+            listResponse = getMatchResultList(sl.get('sportId'),language)
+            listData = listResponse.get('data', [])
+            # listRecods = listData.get('records', [])
+            matchList.extend(listData)
+        match_info_list = result_createMatch_info(matchList,lang)
     # for match_info in match_info_list:
     #     match_info['status'] = mode
     #     statscore_id = getStatscore_id(match_info,'en')
@@ -565,3 +547,60 @@ def fetch_hub88():
 
 
         return metadata_list
+
+def get_yesterday_start_unix():
+    now = datetime.now()
+    yesterday_start = datetime(now.year, now.month, now.day) - timedelta(days=1)
+    timestamp_seconds = int(yesterday_start.timestamp())
+    timestamp_milliseconds = timestamp_seconds * 1000
+    return timestamp_milliseconds
+
+def getMatchResultList(sportId,languageType):
+    url = "https://sportapi.fastball2.com/v1/match/matchResultList"
+
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,id;q=0.6",
+        "Authorization": "tt_6106zvDrksdzzTkXbABHIwEiApcTu6z2.3066f7f1ff252e1881f38f6a3c6e58ab",
+        "Cache-Control": "no-cache",
+        "Content-Type": "application/json;charset=UTF-8",
+        "Dnt": "1",
+        "Origin": "https://pc1.w.fbs6668.com",
+        "Pragma": "no-cache",
+        "Referer": "https://pc1.w.fbs6668.com/",
+        "Sec-Ch-Ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": "\"macOS\"",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    }
+    payload = {
+    "sportId":sportId,
+    "languageType":languageType,
+    "beginTime":get_yesterday_start_unix(),
+    "endTime":int(datetime.now().timestamp() * 1000)
+    }
+    max_retries = 10
+    timeout = 10
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url,  json=payload, timeout=timeout)
+            
+            if response.status_code == 200:
+                logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
+                return response.json()
+
+            logger.error(f"更新resultList数据失败, 状态码: {response.status_code}")
+        
+        except requests.Timeout:
+            logger.error(f"请求resultList超时，第 {attempt + 1}/{max_retries} 次重试")
+        
+        except requests.RequestException as e:
+            logger.error(f"请求resultList发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
+
+    logger.error(f"更新resultList数据失败，重试了 {max_retries} 次，仍未成功")
+    return {}

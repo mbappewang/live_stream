@@ -3,7 +3,7 @@ from backend import create_app, db
 from flask_migrate import Migrate
 # from backend.models import FbSport
 import threading
-from backend.tasks import update_live_streams, update_upcoming_streams, update_prematch_streams, update_animation, update_hub88_event
+from backend.tasks import update_live_streams, update_upcoming_streams, update_prematch_streams, update_animation, update_hub88_event, update_finish_streams
 import logging
 from dotenv import load_dotenv
 
@@ -46,6 +46,11 @@ if __name__ == '__main__':
         prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
         prematch_thread.start()
         logger.info("Started prematch stream update thread")
+
+        finish_thread = threading.Thread(target=lambda: run_with_app_context(update_finish_streams))
+        finish_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        finish_thread.start()
+        logger.info("Started finish stream update thread")
 
         animation_thread = threading.Thread(target=lambda: run_with_app_context(update_animation))
         animation_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束

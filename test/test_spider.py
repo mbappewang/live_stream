@@ -386,7 +386,7 @@ def extract_number(text):
 #     print(i)
 
 def getMatchResultList(languageType):
-    url = "https://api.fastbsv.com/v1/match/matchResultList"
+    url = "https://sportapi.fastball2.com/v1/match/matchResultList"
 
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -409,18 +409,14 @@ def getMatchResultList(languageType):
     }
     payload = {
     "sportId":1,
-    # "current": current,
-    "isPc":True,
     "languageType":languageType,
-    # "orderBy":orderBy,
-    "type":0
     }
     max_retries = 10
     timeout = 10
 
     for attempt in range(max_retries):
         try:
-            response = requests.post(url, headers = headers, json=payload, timeout=timeout)
+            response = requests.post(url,  json=payload, timeout=timeout)
             
             if response.status_code == 200:
                 logger.info(f"Successfully fetched list sportId:  data on attempt {attempt + 1}")
@@ -484,12 +480,13 @@ def getfileStreamByType(languageType):
     logger.error(f"更新Live数据失败，重试了 {max_retries} 次，仍未成功")
     return {}
 
-# MatchResultListResponse = getMatchResultList('CMN')
-# MatchResultListData = MatchResultListResponse.get('data', {})
-# for k,v in MatchResultListResponse.items():
-#     if k == 'data':
-#         continue
-#     print(k,v)
+MatchResultListResponse = getMatchResultList('CMN')
+MatchResultListData = MatchResultListResponse.get('data', [])
+for k,v in MatchResultListResponse.items():
+    if k == 'data':
+        print(k,len(v))
+        continue
+    print(k,v)
 
 def fetch_basic_data(table):
     basicResponse = getfileStreamByType('CMN')
@@ -510,6 +507,6 @@ def fetch_basic_data(table):
 #         for lang,name in j.items():
 #             print(f"table:{k} id:{i} lang:{lang} name:{name}")
 
-basicList = fetch_basic_data('Match Status')
-for i in basicList:
-    print(i)
+# basicList = fetch_basic_data('Match Status')
+# for i in basicList:
+#     print(i)
