@@ -22,6 +22,7 @@ migrate = Migrate(app, db)
 #     print('Initialized database.')
 
 if __name__ == '__main__':
+    app.run(port=20000)
     # 创建并启动后台状态更新线程
     def run_with_app_context(target):
         with app.app_context():
