@@ -28,6 +28,7 @@ dist/
 .coverage/
 .tox/
 .pytest_cache/
+.yaml
 
 # Jupyter Notebooks checkpoints
 .ipynb_checkpoints/
