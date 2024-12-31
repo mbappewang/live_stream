@@ -20,9 +20,9 @@ app = create_app(config_name)
 # 初始化数据库迁移
 migrate = Migrate(app, db)
 
-def run_with_app_context(target):
-    with app.app_context():
-        target()
+# def run_with_app_context(target):
+#     with app.app_context():
+#         target()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 20000))  # 默认端口为20000
