@@ -33,10 +33,10 @@ if __name__ == '__main__':
             target()
 
     try:
-        live_thread = threading.Thread(target=lambda: run_with_app_context(update_live_streams))
-        live_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        live_thread.start()
-        logger.info("Started live stream update thread")
+        # live_thread = threading.Thread(target=lambda: run_with_app_context(update_live_streams))
+        # live_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # live_thread.start()
+        # logger.info("Started live stream update thread")
 
         # upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
         # upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束

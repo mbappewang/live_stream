@@ -463,10 +463,10 @@ def get_metadata(token, eventId):
             logger.error(f"请求metadata发生错误：{e}, 第 {attempt + 1}/{max_retries} 次重试")
 
     logger.error(f"请求metadata失败，重试了 {max_retries} 次，仍未成功")
-    return []
+    return {}
 
 def getStatscoreId(datalist):
-    id = datalist.get('data', None).get('Id', None)
+    id = datalist.get('data', {}).get('Id', {})
     return id
 
 def extract_number(text):
