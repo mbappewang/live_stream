@@ -25,7 +25,7 @@ migrate = Migrate(app, db)
 #         target()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 20000))  # 默认端口为20000
+    port = int(os.environ.get('PORT', 5000))  # 默认端口为20000
     # 创建并启动后台状态更新线程
     def run_with_app_context(target):
         with app.app_context():
