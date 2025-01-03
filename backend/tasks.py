@@ -1,10 +1,11 @@
 from . import db
-from .models import FbSport,Animation,FbResult
+from .models import FbSport,Animation,FbResult,Hub88
 from datetime import datetime
-from .spiders.my_spider import fetch_data,getStatscore_id,fetch_hub88,fetch_basic_data
+from .spiders.my_spider import fetch_data,getStatscore_id,fetch_hub88,fetch_basic_data,get_sports,get_token
 import logging
 import time
 from sqlalchemy import and_
+from datetime import datetime, timezone, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -327,23 +328,27 @@ def update_hub88_event():
     运行间隔：每天执行一次
     """
     logger.info("Starting hub88 event update thread")
-    existing_streams = [{(stream.statscore_id): stream for stream in Animation.query.filter(
-        and_(
-            Animation.eventId.is_(None),
-            Animation.statscore_id.isnot(None)
-        )
-    ).all()}]
+    existing_streams = [stream.eventId for stream in Hub88.query.all()]
 
     # if not existing_streams:
     #     logger.info("No animations found with non-empty animation1 and non-null statscore_id.")
     #     return
-
+# fetch_hub88(existing_streams,sportId,date,token):
     while existing_streams:
         try:
+            token = get_token()
+            sportdata = get_sports(token)
+            blacklist = [457,458,459,820,358,26,787,1216,853]
+            sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
+            # sportIds = [1]
+            today = datetime.today()
+            future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(2)]
             # 调用爬虫程序获取数据
             # logger.info(f"开始抓取hub88:{len(existing_streams)},{existing_streams}")
-            data = fetch_hub88()
-            update_hub88(data)
+            for sportId in sportIds:
+                for date in future_dates:
+                    data = fetch_hub88(existing_streams,sportId,date,token)
+                    update_hub88(data)
         except Exception as e:
             logger.error(f"Error updating statscore_id: {e}")
         time.sleep(60)
@@ -358,31 +363,25 @@ def update_hub88(data):
     if data:
         logger.info(f"Updating streams with {len(data)} items")
         # 获取数据库中已有的直播流记录，以(id, lang)为键，存储在字典中
-        existing_streams = {(stream.statscore_id): stream for stream in Animation.query.filter(
-            and_(
-                # Animation.statscore_id.in_([item['statscore_id'] for item in data]),
-                Animation.statscore_id.isnot(None),
-                Animation.statscore_id != ''
-            )
-        ).all()}
+        existing_streams = {(stream.eventId): stream for stream in Hub88.query.all()}
         
         # 用于存储新的直播流记录
         new_streams = []
         
         for item in data:
-            key = (item['statscore_id'])
+            key = (item['eventId'])
             if key in existing_streams:
                 # 如果数据库中已有该(id, lang)的记录，则更新该记录
                 stream = existing_streams[key]
-                stream.eventId = item.get('eventId', stream.eventId)
+                stream.statscore_id = item.get('statscore_id', stream.eventId)
                 logger.info(f"Updated id with statscore_id {item['statscore_id']} and eventId {item['eventId']}")
-            # else:
-            #     # 如果数据库中没有该(id, lang)的记录，则创建新记录
-            #     new_stream = Animation(
-            #         statscore_id=item['statscore_id'],
-            #         eventId=item['eventId']
-            #     )
-                # new_streams.append(new_stream)
+            else:
+                # 如果数据库中没有该(id, lang)的记录，则创建新记录
+                new_stream = Hub88(
+                    statscore_id=item['statscore_id'],
+                    eventId=item['eventId']
+                )
+                new_streams.append(new_stream)
                 logger.info(f"Created new id with statscore_id {item['statscore_id']} and eventId {item['eventId']}")
         
         # 批量插入新记录

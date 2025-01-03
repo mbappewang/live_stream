@@ -143,3 +143,16 @@ class MatchInfo(db.Model):
             'awayteamId': self.awayteamId,
             'match_stats': self.match_stats
         }
+    
+class Hub88(db.Model):
+    __tablename__ = 'hub88'
+    
+    eventId = db.Column(db.Integer, primary_key=True, nullable=False)
+    statscore_id = db.Column(db.Integer, nullable=True)
+
+    def to_json(self):
+        """将模型转换为JSON格式，用于API响应"""
+        return {
+            'eventId': self.eventId,
+            'statscore_id': self.statscore_id,
+        }

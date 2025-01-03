@@ -453,7 +453,9 @@ def get_metadata(token, eventId):
                 # logger.info(f"请求metadata成功:  data on attempt {attempt + 1}")
                 data = response.json()
                 return data
-
+            if response.status_code == 404:
+                logger.error(f"请求metadata数据失败, 状态码: {response.status_code}")
+                return {}
             logger.error(f"请求metadata数据失败, 状态码: {response.status_code}")
         
         except requests.Timeout:
@@ -501,33 +503,22 @@ def get_matched_event():
     return eventIds_list
 
 
-def fetch_hub88():
+def fetch_hub88(existing_streams,sportId,date,token):
     with current_app.app_context():
-        token = get_token()
-        logger.info(f"获取hub88 token数据成功: {token}")
-        sportdata = get_sports(token)
-        blacklist = [457,458,459,820,358,26,787,1216,853]
-        sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
-        # sportIds = [1]
+        logger.info(f"获取hub88数据: {sportId} {date}")
         schedule_list = []
-        today = datetime.today()
-        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(2)]
-        s = 0
-        for sportId in sportIds:
-            s += 1
-            d = 0
-            for date in future_dates:
-                schedule = get_schedule_nolimit_location(token, date, [sportId])
-                schedule = [i.get('id') for i in schedule if i.get('id') not in get_matched_event()]
-                schedule_list.extend(schedule)
-                d += 1
-                logger.info(f"获取hub88数据进度: {s}/{len(sportIds)} {d}/{len(future_dates)}")
-
+        schedule = get_schedule_nolimit_location(token, date, [sportId])
+        schedule_list = [i.get('id') for i in schedule if i.get('id') not in get_matched_event()]
+        logger.info(f"获取hub88数据: {len(schedule_list)}")
         metadata_list = []
         if not schedule_list:
             return []
         i = 0
         for eventId in schedule_list:
+            if eventId in existing_streams:
+                i += 1
+                logger.info(f"获取hub88数据进度: {i}/{len(schedule_list)}")
+                continue
             # logger.info(f"获取hub88数据: {eventId}")
             metadata_dict = {}
             metadata = get_metadata(token, eventId)
