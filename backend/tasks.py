@@ -326,6 +326,7 @@ def update_hub88_event():
     
     运行间隔：每天执行一次
     """
+    logger.info("Starting hub88 event update thread")
     existing_streams = [{(stream.statscore_id): stream for stream in Animation.query.filter(
         and_(
             Animation.eventId.is_(None),

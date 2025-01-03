@@ -93,6 +93,17 @@ class Animation(db.Model):
     animation2 = db.Column(db.Text, nullable=True)
     statscore_id = db.Column(db.Integer, nullable=True)
     eventId = db.Column(db.Integer, nullable=True)
+    match_time_unix = db.Column(db.BigInteger, nullable=True)
+    def to_json(self):
+        """将模型转换为JSON格式，用于API响应"""
+        return {
+            'id': self.id,
+            'animation1': self.animation1,
+            'animation2': self.animation2,
+            'statscore_id': self.statscore_id,
+            'eventId': self.eventId,
+            'match_time_unix': self.match_time_unix,
+        }
 
 class MatchInfo(db.Model):
     __tablename__ = 'match_info'

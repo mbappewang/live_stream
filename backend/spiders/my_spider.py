@@ -10,6 +10,7 @@ from datetime import datetime, timezone, timedelta
 from .. import db
 from ..models import FbSport,Animation
 from sqlalchemy import and_
+import time
 
 # 配置日志系统
 logging.basicConfig(
@@ -279,7 +280,7 @@ def fetch_data(mode,language,lang):
         slListMode = [i for i in slList if i.get('des') == mode]
         # print(slListMode)
         for sl in slListMode:
-            logger.info(f"Fetching data for {sl}")
+            # logger.info(f"Fetching data for {sl}")
             for i in range(1,sl.get('pageTotal')+1):
                 listResponse = getList(sl.get('sportId'),i,language,1,sl.get('type'))
                 listData = listResponse.get('data', {})
@@ -289,7 +290,7 @@ def fetch_data(mode,language,lang):
     else:
         slListMode = [i for i in slList if i.get('des') == '早盘']
         for sl in slListMode:
-            logger.info(f"Fetching data for {sl}")
+            # logger.info(f"Fetching data for {sl}")
             # for i in range(1,sl.get('pageTotal')+1):
             listResponse = getMatchResultList(sl.get('sportId'),language)
             listData = listResponse.get('data', [])
@@ -363,7 +364,7 @@ def get_token():
     clientId = current_app.config.get('CLIENTID')
     password = current_app.config.get('PASSWORD')
     payload = {'clientId': clientId, 'password': password}
-    # logger.info(f"请求token clientId: {clientId} password: {password}")
+    logger.info(f"请求token clientId: {clientId} password: {password}")
     max_retries = 10
     timeout = 10
     for attempt in range(max_retries):
@@ -399,6 +400,7 @@ def get_sports(token):
                 # logger.info(f"请求运动列表成功:  data on attempt {attempt + 1}")
                 data = response.json()
                 return data
+            time.sleep(1)
 
             logger.error(f"请求运动列表数据失败, 状态码: {response.status_code}")
         
@@ -438,10 +440,11 @@ def get_schedule_nolimit_location(token,startDate,sportIds):
     return []
 
 def get_metadata(token, eventId):
-    url = f'https://wintokens-dev-tradeart-api.trading.io/api/Metadata/event/all/{eventId}'
+    url = f'https://wintokens-dev-tradeart-api.trading.io/api/Metadata/event/StatsCoreIntegration/{eventId}'
     headers = {'Authorization': f'Bearer {token}'}
     max_retries = 10
     timeout = 10
+    logger.info(f"请求metadata eventId: {eventId}")
     for attempt in range(max_retries):
         try:
             response = requests.get(url, headers=headers, timeout=timeout)
@@ -463,11 +466,8 @@ def get_metadata(token, eventId):
     return []
 
 def getStatscoreId(datalist):
-    for i in datalist:
-        if i['dataType'] == 'StatsCoreIntegration':
-            id = i.get('data', None).get('Id', None)
-            return id
-    return None
+    id = datalist.get('data', None).get('Id', None)
+    return id
 
 def extract_number(text):
     match = re.search(r'm:(\d+)', text)
@@ -504,12 +504,14 @@ def get_matched_event():
 def fetch_hub88():
     with current_app.app_context():
         token = get_token()
+        logger.info(f"获取hub88 token数据成功: {token}")
         sportdata = get_sports(token)
         blacklist = [457,458,459,820,358,26,787,1216,853]
         sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
+        # sportIds = [1]
         schedule_list = []
         today = datetime.today()
-        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(9)]
+        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(2)]
         s = 0
         for sportId in sportIds:
             s += 1

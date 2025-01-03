@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from . import api  # 确保 api 蓝图已正确注册
-from ..models import FbSport, MatchInfo
+from ..models import FbSport, MatchInfo, Animation
 from .. import db
 from datetime import datetime
 import logging
@@ -32,6 +32,8 @@ def get_sport_count():
     result = {}
     for match in matches:
         sportId = match.sportId
+        if sportId is None:
+            continue
         status_id = match.status_id
         if sportId not in result:
             result[sportId] = []
@@ -93,6 +95,25 @@ def get_match_detail(id):
     logger.info(f"Fetching match detail with id {id}")
     match = MatchInfo.query.get_or_404(id)
     return jsonify(match.to_json())
+
+@api.route('/fb_hub88', methods=['GET'])
+def get_fb_hub88():
+    logger.info(f"Fetching fb_hub88")
+    match_data = db.session.query(
+        Animation.id,
+        Animation.eventId
+    ).filter(
+        Animation.eventId.isnot(None),
+        Animation.match_time_unix >= int(datetime.now().timestamp())
+    ).all()
+
+    match_ids = []
+    for match in match_data:
+        match_id = str(match.id)
+        event_id = str(match.eventId)
+        match_ids.append(f"{match_id}*{event_id}")
+    return jsonify(match_ids)
+
 
 @api.route('/hello', methods=['GET'])
 def hello_world():
