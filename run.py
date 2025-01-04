@@ -33,25 +33,25 @@ if __name__ == '__main__':
             target()
 
     try:
-        # live_thread = threading.Thread(target=lambda: run_with_app_context(update_live_streams))
-        # live_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # live_thread.start()
-        # logger.info("Started live stream update thread")
+        live_thread = threading.Thread(target=lambda: run_with_app_context(update_live_streams))
+        live_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        live_thread.start()
+        logger.info("Started live stream update thread")
 
-        # upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
-        # upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # upcoming_thread.start()
-        # logger.info("Started upcoming stream update thread")
+        upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
+        upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        upcoming_thread.start()
+        logger.info("Started upcoming stream update thread")
 
-        # prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
-        # prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # prematch_thread.start()
-        # logger.info("Started prematch stream update thread")
+        prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
+        prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        prematch_thread.start()
+        logger.info("Started prematch stream update thread")
 
-        # finish_thread = threading.Thread(target=lambda: run_with_app_context(update_finish_streams))
-        # finish_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # finish_thread.start()
-        # logger.info("Started finish stream update thread")
+        finish_thread = threading.Thread(target=lambda: run_with_app_context(update_finish_streams))
+        finish_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        finish_thread.start()
+        logger.info("Started finish stream update thread")
 
         animation_thread = threading.Thread(target=lambda: run_with_app_context(update_animation))
         animation_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
-        app.run(port=port, debug=False, use_reloader=False)
+        app.run(port=port, debug=False, use_reloader=True)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")

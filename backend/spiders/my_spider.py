@@ -8,7 +8,7 @@ from flask import current_app
 import math
 from datetime import datetime, timezone, timedelta
 from .. import db
-from ..models import FbSport,Animation
+from ..models import FbSport,Animation,Hub88
 from sqlalchemy import and_
 import time
 
@@ -160,7 +160,7 @@ def createMatch_info(matchList,lang):
         match_info['nm'] = match.get('nm', '')
         if match.get('id', 0) == 0:
             continue
-        match_info['lang'] = lang
+        # match_info['lang'] = lang
         match_info['id'] = match.get('id')
         match_info['animation'] = match.get('as', '')
         match_info['fid'] = match.get('fid', '')
@@ -188,9 +188,10 @@ def result_createMatch_info(matchList,lang):
     for match in matchList:
         match_info = {}
         match_info['id'] = match.get('id', '')
-        match_info['lang'] = lang
+        # match_info['lang'] = lang
         match_info['ms'] = match.get('ms', '')
         match_info['nsg'] = match.get('nsg', '')
+        match_info['sid'] = match.get('sid', None)
 
         match_info_list.append(match_info)
     return match_info_list
@@ -480,10 +481,10 @@ def extract_number(text):
 
 def get_matched_event():
     """获取animation1有值且不为空字符串，同时statscore_id不为null的行"""
-    query = db.session.query(Animation.eventId).filter(
+    query = db.session.query(Hub88.eventId).filter(
         and_(
-            Animation.eventId.isnot(None),
-            Animation.eventId != ''
+            Hub88.eventId.isnot(None),
+            Hub88.eventId != ''
         )
     )
 

@@ -1,19 +1,12 @@
 from flask import jsonify, request
 from . import api  # 确保 api 蓝图已正确注册
-from ..models import FbSport, MatchInfo, Animation
+from ..models import FbSport, MatchInfo, Animation,Hub88
 from .. import db
 from datetime import datetime
 import logging
 from sqlalchemy import func
 
 logger = logging.getLogger(__name__)
-
-@api.route('/match/<int:id>/<string:lang>', methods=['GET'])
-def get_stream(id, lang):
-    """根据ID和语言获取单个流媒体记录"""
-    logger.info(f"Fetching stream with id {id} and lang {lang}")
-    stream = FbSport.query.get_or_404((id, lang))
-    return jsonify(stream.to_json())
 
 @api.route('/match', methods=['GET'])
 def get_sport_count():
@@ -98,21 +91,23 @@ def get_match_detail(id):
 
 @api.route('/fb_hub88', methods=['GET'])
 def get_fb_hub88():
-    logger.info(f"Fetching fb_hub88")
-    match_data = db.session.query(
-        Animation.id,
-        Animation.eventId
-    ).filter(
-        Animation.eventId.isnot(None),
-        Animation.match_time_unix >= int(datetime.now().timestamp())
-    ).all()
+    logger.info("Fetching animation and hub88 data")
+    
+    # 执行查询
+    results = db.session.query(Animation.id, Hub88.eventId
+                               ).join(Hub88, Hub88.statscore_id == Animation.statscore_id
+                                      ).filter(
+        Animation.match_time_unix > datetime.now().timestamp(),
+                                      ).all()
 
-    match_ids = []
-    for match in match_data:
-        match_id = str(match.id)
-        event_id = str(match.eventId)
-        match_ids.append(f"{match_id}*{event_id}")
-    return jsonify(match_ids)
+    # 构建返回结果
+    result_list = []
+    for result in results:
+        id = str(result.id)
+        eventId = str(result.eventId)
+        result_list.append(f"{id}*{eventId}")
+    result_dict = {'count': len(result_list),'data': result_list}
+    return jsonify(result_dict)
 
 
 @api.route('/hello', methods=['GET'])

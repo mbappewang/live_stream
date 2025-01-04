@@ -10,7 +10,7 @@ class FbSport(db.Model):
     __tablename__ = 'fb'
 
     id = db.Column(db.Integer, primary_key=True)
-    lang = db.Column(db.String(100), primary_key=True)
+    # lang = db.Column(db.String(100), primary_key=True)
     created_at = db.Column(db.DateTime, nullable=True)
     updated_at = db.Column(db.DateTime, nullable=True)
     nm = db.Column(db.Text, nullable=True)
@@ -40,7 +40,7 @@ class FbSport(db.Model):
         logger.info(f"Converting id {self.id} to JSON")
         return {
             'id': self.id,
-            'lang': self.lang,
+            # 'lang': self.lang,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'nm': self.nm,
@@ -70,20 +70,22 @@ class FbResult(db.Model):
     __tablename__ = 'fb_result'
     
     id = db.Column(db.Integer, primary_key=True)
-    lang = db.Column(db.String(100), primary_key=True)
+    # lang = db.Column(db.String(100), primary_key=True)
     ms = db.Column(db.Integer, nullable=True)
     nsg = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, nullable=True)
     updated_at = db.Column(db.DateTime, nullable=True)
+    sid = db.Column(db.Integer, nullable=True)
     def to_json(self):
         """将模型转换为JSON格式，用于API响应"""
         return {
             'id': self.id,
-            'lang': self.lang,
+            # 'lang': self.lang,
             'ms': self.ms,
             'nsg': self.nsg,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'sid': self.sid,
         }
 
 class Animation(db.Model):
@@ -92,7 +94,7 @@ class Animation(db.Model):
     animation1 = db.Column(db.Text, nullable=True)
     animation2 = db.Column(db.Text, nullable=True)
     statscore_id = db.Column(db.Integer, nullable=True)
-    eventId = db.Column(db.Integer, nullable=True)
+    # eventId = db.Column(db.Integer, nullable=True)
     match_time_unix = db.Column(db.BigInteger, nullable=True)
     def to_json(self):
         """将模型转换为JSON格式，用于API响应"""
