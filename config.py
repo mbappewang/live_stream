@@ -26,6 +26,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     config_data = load_yaml_config('development')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI')
     AUTHORIZATION = config_data.get('AUTHORIZATION')
     CLIENTID = config_data.get('CLIENTID')
@@ -35,12 +36,14 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     config_data = load_yaml_config('testing')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI', Config.SQLALCHEMY_DATABASE_URI)
     TESTING = config_data.get('TESTING', False)
     logger.info("Testing configuration loaded")
 
 class ProductionConfig(Config):
     config_data = load_yaml_config('production')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI', Config.SQLALCHEMY_DATABASE_URI)
     logger.info("Production configuration loaded")
 
