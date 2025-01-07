@@ -27,9 +27,9 @@ migrate = Migrate(app, db)
 #         target()
 
 # 定义根路径路由
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return send_from_directory('frontend', 'index.html')
+    return send_from_directory(os.path.join(os.getcwd(), 'frontend'), 'index.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # 默认端口为20000
@@ -44,15 +44,15 @@ if __name__ == '__main__':
         live_thread.start()
         logger.info("Started live stream update thread")
 
-        upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
-        upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        upcoming_thread.start()
-        logger.info("Started upcoming stream update thread")
+        # upcoming_thread = threading.Thread(target=lambda: run_with_app_context(update_upcoming_streams))
+        # upcoming_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # upcoming_thread.start()
+        # logger.info("Started upcoming stream update thread")
 
-        prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
-        prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        prematch_thread.start()
-        logger.info("Started prematch stream update thread")
+        # prematch_thread = threading.Thread(target=lambda: run_with_app_context(update_prematch_streams))
+        # prematch_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # prematch_thread.start()
+        # logger.info("Started prematch stream update thread")
 
         finish_thread = threading.Thread(target=lambda: run_with_app_context(update_finish_streams))
         finish_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
@@ -64,13 +64,13 @@ if __name__ == '__main__':
         animation_thread.start()
         logger.info("Started animation update thread")
 
-        hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
-        hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        hub88_thread.start()
-        logger.info("Started hub88 update thread")
+        # hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
+        # hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        # hub88_thread.start()
+        # logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
-        app.run(port=port, debug=False, use_reloader=False)
+        app.run(port=port, debug=False, use_reloader=True)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")

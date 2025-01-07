@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>比赛信息</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
 </head>
 <body>
-    <div id="app">
-        <h1>比赛信息</h1>
-        <div v-for="match in matches" :key="match.match_id" class="match">
-            <h2>{{ match.homeTeam }} vs {{ match.awayTeam }}</h2>
-            <p>日期: {{ new Date(match.match_time).toLocaleString() }}</p>
-            <p>地点: {{ match.regionName }}</p>
-            <p>联赛: {{ match.leagueName }}</p>
-            <p>状态: {{ match.status }}</p>
-            <p>比分: {{ match.score_team1 }} - {{ match.score_team2 }}</p>
-            <a :href="match.web" target="_blank">观看比赛</a>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="app.js"></script>
+  
 </body>
 </html>
