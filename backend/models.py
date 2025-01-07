@@ -158,3 +158,24 @@ class Hub88(db.Model):
             'eventId': self.eventId,
             'statscore_id': self.statscore_id,
         }
+    
+class Stream(db.Model):
+    __tablename__ = 'stream'
+    
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    web = db.Column(db.Text, nullable=True)
+    flvHD = db.Column(db.Text, nullable=True)
+    flvSD = db.Column(db.Text, nullable=True)
+    m3u8HD = db.Column(db.Text, nullable=True)
+    m3u8SD = db.Column(db.Text, nullable=True)
+
+    def to_json(self):
+        """将模型转换为JSON格式，用于API响应"""
+        return {
+            'id': self.id,
+            'web': self.web,
+            'flvHD': self.flvHD,
+            'flvSD': self.flvSD,
+            'm3u8HD': self.m3u8HD,
+            'm3u8SD': self.m3u8SD
+        }

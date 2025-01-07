@@ -327,24 +327,24 @@ def update_hub88_event():
     #     return
 # fetch_hub88(existing_streams,sportId,date,token):
     # while not existing_streams:
-    try:
-        token = get_token()
-        # sportdata = get_sports(token)
-        # blacklist = [457,458,459,820,358,26,787,1216,853]
-        # sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
-        sportIds = [1,8,2,4,27,11,53,14,17,25]
-        today = datetime.today()
-        future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
-        # 调用爬虫程序获取数据
-        # logger.info(f"开始抓取hub88:{len(existing_streams)},{existing_streams}")
-        for sportId in sportIds:
-            for date in future_dates:
-                data = fetch_hub88(existing_streams,sportId,date,token)
-                update_hub88(data)
-    except Exception as e:
-        logger.error(f"Error updating statscore_id: {e}")
-    time.sleep(60)
-    return
+    while True:
+        try:
+            token = get_token()
+            # sportdata = get_sports(token)
+            # blacklist = [457,458,459,820,358,26,787,1216,853]
+            # sportIds = [i.get('id') for i in sportdata if i.get('id') not in blacklist]
+            sportIds = [1,8,2,4,27,11,53,14,17,25]
+            today = datetime.today()
+            future_dates = [(today + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
+            # 调用爬虫程序获取数据
+            # logger.info(f"开始抓取hub88:{len(existing_streams)},{existing_streams}")
+            for sportId in sportIds:
+                for date in future_dates:
+                    data = fetch_hub88(existing_streams,sportId,date,token)
+                    update_hub88(data)
+        except Exception as e:
+            logger.error(f"Error updating statscore_id: {e}")
+        time.sleep(60)
 
 def update_hub88(data):
     """更新直播流数据

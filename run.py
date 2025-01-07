@@ -6,6 +6,7 @@ import threading
 from backend.tasks import update_live_streams, update_upcoming_streams, update_prematch_streams, update_animation, update_hub88_event, update_finish_streams
 import logging
 from dotenv import load_dotenv
+from flask import send_from_directory
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,11 @@ migrate = Migrate(app, db)
 # def run_with_app_context(target):
 #     with app.app_context():
 #         target()
+
+# 定义根路径路由
+@app.route('/')
+def index():
+    return send_from_directory('frontend', 'index.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # 默认端口为20000
@@ -58,13 +64,13 @@ if __name__ == '__main__':
         animation_thread.start()
         logger.info("Started animation update thread")
 
-        # hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
-        # hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
-        # hub88_thread.start()
-        # logger.info("Started hub88 update thread")
+        hub88_thread = threading.Thread(target=lambda: run_with_app_context(update_hub88_event))
+        hub88_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
+        hub88_thread.start()
+        logger.info("Started hub88 update thread")
         
         # 启动Flask Web服务器
-        app.run(port=port, debug=False, use_reloader=True)
+        app.run(port=port, debug=False, use_reloader=False)
         logger.info("Flask web server started")
     except Exception as e:
         logger.error(f"Error starting threads or web server: {e}")

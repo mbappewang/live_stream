@@ -38,7 +38,9 @@ class TestingConfig(Config):
     config_data = load_yaml_config('testing')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = config_data.get('SQLALCHEMY_DATABASE_URI', Config.SQLALCHEMY_DATABASE_URI)
-    TESTING = config_data.get('TESTING', False)
+    CLIENTID = config_data.get('CLIENTID')
+    PASSWORD = config_data.get('PASSWORD')
+    DEBUG = config_data.get('TESTING', False)
     logger.info("Testing configuration loaded")
 
 class ProductionConfig(Config):

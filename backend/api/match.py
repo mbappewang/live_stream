@@ -1,6 +1,6 @@
-from flask import jsonify, request
+from flask import jsonify, request, send_from_directory
 from . import api  # 确保 api 蓝图已正确注册
-from ..models import FbSport, MatchInfo, Animation,Hub88
+from ..models import FbSport, MatchInfo, Animation,Hub88,Stream
 from .. import db
 from datetime import datetime
 import logging
@@ -114,3 +114,43 @@ def get_fb_hub88():
 def hello_world():
     """返回Hello World"""
     return jsonify(message="Hello, World!")
+
+
+@api.route('/match_info_details/<int:id>', methods=['GET'])
+def get_match_info_details(id):
+    """获取match_info的详细信息"""
+    logger.info("Fetching match_info details")
+    
+    # 执行查询
+    results = db.session.query(
+        Hub88.eventId,
+        Animation.animation1,
+        Animation.animation2,
+        Stream.flvHD,
+        Stream.flvSD,
+        Stream.m3u8HD,
+        Stream.m3u8SD
+    ).select_from(MatchInfo
+    ).outerjoin(Animation, Animation.id == MatchInfo.id
+    ).outerjoin(Stream, Stream.id == MatchInfo.id
+    ).outerjoin(Hub88, Hub88.statscore_id == Animation.statscore_id
+    ).filter(
+        MatchInfo.status_id.in_([4, 5]),
+        Hub88.eventId.isnot(None),
+        MatchInfo.id == id
+    ).all()
+
+    # 构建返回结果
+    result_list = []
+    for result in results:
+        result_list.append({
+            'eventId': result.eventId,
+            'animation1': result.animation1,
+            'animation2': result.animation2,
+            'flvHD': result.flvHD,
+            'flvSD': result.flvSD,
+            'm3u8HD': result.m3u8HD,
+            'm3u8SD': result.m3u8SD
+        })
+
+    return jsonify(result_list)
